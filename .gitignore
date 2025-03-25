@@ -20,3 +20,5 @@ Thumbs.db
 .m2/
 *.cer
 jnlp_cache/
+jre/
+/jre/
