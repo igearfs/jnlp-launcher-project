@@ -10,7 +10,11 @@ It includes a **bundled JRE**, so users do not need to have Java installed syste
 
 ## Setup Instructions  
 
-1. Extract the provided `jre.rar` — this will give you a portable JRE.  
+NOTE THE INCLUDED JRE IS FOR WINDOWS... please get other JRE's from here for your OS. Until I can include them...
+Just change the extracted name to jre for the folder and drop it into the main directory...
+
+
+1. Extract the provided `jre.rar` — this will give you a portable JRE. (for Windows currently) 
 2. Start the **Mirth Connect server** (or your JNLP server).  
 3. Use Maven to build the project:  
    - Either through your IDE's Maven build tools  
