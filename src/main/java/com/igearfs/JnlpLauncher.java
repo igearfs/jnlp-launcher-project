@@ -15,12 +15,14 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JnlpLauncher {
 
-    private static final String CACHE_DIR = "jnlp_cache";
+    private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
     private static final String JRE_PATH = "jre/bin/java"; // Relative path to bundled JRE
     private static final String TRUST_STORE_PASSWORD = "changeit";
 
@@ -46,7 +48,7 @@ public class JnlpLauncher {
         }
     }
 
-    private static void loadJnlpAndLaunch(String jnlpUrl) throws Exception {
+    public static void loadJnlpAndLaunch(String jnlpUrl) throws Exception {
         Document jnlpDoc = loadJnlp(jnlpUrl);
         String mainClass = extractMainClass(jnlpDoc);
         List<String> jarUrls = extractJarUrls(jnlpUrl, jnlpDoc);
@@ -58,7 +60,7 @@ public class JnlpLauncher {
 
         List<Path> downloadedJars = new ArrayList<>();
         for (String jarUrl : jarUrls) {
-            Path jarPath = downloadJar(jarUrl);
+            Path jarPath = downloadJar(jarUrl, jnlpUrl); // Pass jnlpUrl for domain-based cache
             downloadedJars.add(jarPath);
         }
 
@@ -111,8 +113,25 @@ public class JnlpLauncher {
         return appArgs;
     }
 
-    private static Path downloadJar(String jarUrl) throws IOException {
-        // Create a URL object from the JAR URL string
+    private static Path downloadJar(String jarUrl, String jnlpUrl) throws IOException {
+        // Generate a cache folder based on the domain
+        String domain = getDomainFromUrl(jnlpUrl);
+        Path domainCacheDir = Paths.get(CACHE_DIR, domain);
+        if (!Files.exists(domainCacheDir)) {
+            Files.createDirectories(domainCacheDir);
+        }
+
+        // Create the full file path for the JAR in the cache
+        Path jarPath = domainCacheDir.resolve(getFileNameFromUrl(jarUrl));
+
+        // If the JAR file already exists in the cache, skip the download
+        if (Files.exists(jarPath)) {
+            System.out.println("JAR already exists in cache: " + jarPath.toString());
+            return jarPath;
+        }
+
+        // Download the JAR file if it doesn't exist
+        System.out.println("Downloading JAR from: " + jarUrl);
         URL url = new URL(jarUrl);
 
         // Open a connection to the URL
@@ -120,12 +139,9 @@ public class JnlpLauncher {
         conn.setRequestProperty("User-Agent", "Java JNLP Launcher");
         conn.connect();
 
-        // Create a temporary file in the cache directory to save the JAR
-        Path tempJar = Files.createTempFile(Paths.get(CACHE_DIR), "downloaded-", ".jar");
-
-        // Download the file
+        // Download the file to the cache directory
         try (InputStream in = conn.getInputStream();
-             OutputStream out = Files.newOutputStream(tempJar)) {
+             OutputStream out = Files.newOutputStream(jarPath)) {
             byte[] buffer = new byte[4096];
             int len;
             while ((len = in.read(buffer)) != -1) {
@@ -133,11 +149,23 @@ public class JnlpLauncher {
             }
         }
 
-        // Return the path of the downloaded JAR file
-        System.out.println("Downloaded JAR to: " + tempJar.toString());
-        return tempJar;
+        System.out.println("Downloaded JAR to: " + jarPath.toString());
+        return jarPath;
     }
 
+    private static String getDomainFromUrl(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            return url.getHost();  // Extract the domain (host) from the URL
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid URL: " + urlString, e);
+        }
+    }
+
+    private static String getFileNameFromUrl(String jarUrl) {
+        // Extract the file name from the URL (e.g., "file.jar" from "http://example.com/file.jar")
+        return jarUrl.substring(jarUrl.lastIndexOf('/') + 1);
+    }
 
     private static String buildClasspath(List<Path> downloadedJars) {
         StringBuilder classpath = new StringBuilder();
