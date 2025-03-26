@@ -1,3 +1,8 @@
+⚠️ WARNING: BACKUP YOUR JNLP_ENTRIES.txt file ⚠️
+Before you run this new program, please make sure to save your JNLP entries! We all know the universe can be unpredictable, and while we certainly don’t like bad juju, it can sometimes sneak in when we least expect it. To avoid any unwanted surprises, backup your data before proceeding!
+
+Remember: We don’t want any bad juju to ruin your day! 😱
+
 ---
 📜 Server Side Public License
 
