@@ -1,4 +1,9 @@
 ---
+📜 Server Side Public License
+
+📌 This project is licensed under the Server Side Public License (SSPL) v1.0.
+
+------------------------------------------------------------------------------------
 
 # JNLP Launcher
 
