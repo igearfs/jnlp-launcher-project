@@ -1,4 +1,6 @@
-package com.igearfs;
+package com.igearfs.jnlp.util;
+
+import com.igearfs.jnlp.model.LaunchEntry;
 
 import java.io.*;
 import java.util.Collections;
@@ -24,6 +26,19 @@ public class LaunchEntryManager {
                         newParts[0] = parts[0];
                         newParts[1] = parts[1];
                         newParts[2] = parts[2];
+                        parts = newParts;
+                        // If an entry doesn't have a GUID, generate one
+                        if (parts[3] == null || parts[3].isEmpty()) {
+                            parts[3] = UUID.randomUUID().toString(); // Generate a new GUID for this entry
+                        }
+                        newSaves = true;
+                    }
+                    if(parts.length == 2)
+                    {
+                        String[] newParts = new String[4];
+                        newParts[0] = parts[0];
+                        newParts[1] = parts[1];
+                        newParts[2] = "";
                         parts = newParts;
                         // If an entry doesn't have a GUID, generate one
                         if (parts[3] == null || parts[3].isEmpty()) {

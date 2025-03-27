@@ -58,7 +58,8 @@
             <artifactId>javafx-graphics</artifactId>
             <version>${jfx.version}</version>
         </dependency>
-<!--        <dependency>-->
+
+        <!--        <dependency>-->
 <!--            <groupId>com.dlsc.formsfx</groupId>-->
 <!--            <artifactId>formsfx-core</artifactId>-->
 <!--            <version>11.6.0</version>-->
@@ -141,8 +142,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>21</release>  <!-- Use release instead of -source and -target -->
                 </configuration>
             </plugin>
 
@@ -156,7 +156,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.igearfs.Main</mainClass> <!-- Corrected main class -->
+                            <mainClass>com.igearfs.jnlp.Main</mainClass> <!-- Corrected main class -->
                         </configuration>
                     </execution>
                 </executions>
@@ -175,7 +175,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.igearfs.Main</mainClass>
+                                    <mainClass>com.igearfs.jnlp.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

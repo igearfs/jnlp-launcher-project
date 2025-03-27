@@ -1,5 +1,6 @@
-package com.igearfs;
+package com.igearfs.jnlp;
 
+import com.igearfs.jnlp.security.TrustStoreManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,15 +16,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JnlpLauncher {
 
     private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
-    private static final String JRE_PATH = "jre/bin/java"; // Relative path to bundled JRE
+    private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
     private static final String TRUST_STORE_PASSWORD = "changeit";
 
     public static void main(String[] args) {
