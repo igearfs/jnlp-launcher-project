@@ -48,6 +48,14 @@ public class JnlpLauncher {
     }
 
     public static void loadJnlpAndLaunch(String jnlpUrl) throws Exception {
+        try {
+            // Trust the server certificate by using the default JRE truststore
+            TrustStoreManager.trustUrl(jnlpUrl);  // Automatically uses the default truststore from JRE
+
+        } catch (Exception e) {
+            System.err.println("Error during JNLP launch process: " + e.getMessage());
+            e.printStackTrace();
+        }
         Document jnlpDoc = loadJnlp(jnlpUrl);
         String mainClass = extractMainClass(jnlpDoc);
         List<String> jarUrls = extractJarUrls(jnlpUrl, jnlpDoc);
