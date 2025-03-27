@@ -1,5 +1,6 @@
 package com.igearfs.jnlp;
 
+import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.security.TrustStoreManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,7 +24,6 @@ public class JnlpLauncher {
 
     private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
     private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
-    private static final String TRUST_STORE_PASSWORD = "changeit";
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -34,11 +34,13 @@ public class JnlpLauncher {
         String jnlpUrl = args[0];
 
         try {
+
             // Trust the server certificate by using the default JRE truststore
-            TrustStoreManager.trustUrl(jnlpUrl);  // Automatically uses the default truststore from JRE
+            // Create LaunchEntry and pass it to the trustUrl method
+            LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true); // Example entry
 
             // Now SSL verification will trust the JNLP URL server's certificate
-            loadJnlpAndLaunch(jnlpUrl);
+            loadJnlpAndLaunch(entry);
 
         } catch (Exception e) {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
@@ -47,15 +49,16 @@ public class JnlpLauncher {
         }
     }
 
-    public static void loadJnlpAndLaunch(String jnlpUrl) throws Exception {
+    public static void loadJnlpAndLaunch(LaunchEntry entry) throws Exception {
         try {
             // Trust the server certificate by using the default JRE truststore
-            TrustStoreManager.trustUrl(jnlpUrl);  // Automatically uses the default truststore from JRE
+            TrustStoreManager.trustUrl(entry);  // Automatically uses the default truststore from JRE
 
         } catch (Exception e) {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
         }
+        String jnlpUrl = entry.getUrl();
         Document jnlpDoc = loadJnlp(jnlpUrl);
         String mainClass = extractMainClass(jnlpDoc);
         List<String> jarUrls = extractJarUrls(jnlpUrl, jnlpDoc);
