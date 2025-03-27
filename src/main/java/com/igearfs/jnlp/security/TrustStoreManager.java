@@ -1,7 +1,9 @@
 package com.igearfs.jnlp.security;
 
+import com.igearfs.jnlp.model.LaunchEntry; // Import LaunchEntry class
 import javax.net.ssl.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -13,21 +15,6 @@ public class TrustStoreManager {
     private static final String LOCAL_JRE_PATH = System.getProperty("java.home");  // Dynamically set the local path to the system JRE
     private static final String TRUSTSTORE_PATH = LOCAL_JRE_PATH + "/lib/security/cacerts";
     private static final String TRUSTSTORE_PASSWORD = "changeit"; // Default password for the truststore
-
-    // Static block to disable hostname verification for localhost only
-    static {
-        // For localhost testing only
-        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-                new javax.net.ssl.HostnameVerifier() {
-                    public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
-                        // Trust "localhost" as a valid hostname
-                        if (hostname.equals("localhost")) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-    }
 
     // Method to download the server's SSL certificate without SSL validation
     public static X509Certificate downloadCertificate(String jnlpUrl) throws Exception {
@@ -112,38 +99,60 @@ public class TrustStoreManager {
         System.out.println("SSL context set to use updated truststore.");
     }
 
+    // Dynamic method to validate domain based on the ignoreDomainValidation flag
+    public static void setCustomHostnameVerifier(LaunchEntry entry)
+    {
+        // Only disable domain validation if the user chose to ignore it
+        if (entry.isIgnoreDomainValidation()) {
+            System.out.println("Domain validation disabled for: " + entry.getUrl());
+            // Disable domain validation by accepting any hostname
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+        } else {
+            System.out.println("Domain validation enabled for: " + entry.getUrl());
+            // Validate that the hostname matches the URL's host
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> {
+                try {
+                    return hostname.equals(new URL(entry.getUrl()).getHost());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Invalid URL format: " + entry.getUrl(), e);
+                }
+            });
+        }
+    }
+
     // Method to trust a URL (downloads the certificate, adds it to the default truststore)
-    public static void trustUrl(String jnlpUrl) {
+    public static void trustUrl(LaunchEntry entry) {
         try {
-            // Step 1: Download the server certificate from the given URL without SSL validation
-            X509Certificate cert = downloadCertificate(jnlpUrl);
+            // Step 1: Set hostname verification based on the LaunchEntry ignoreDomainValidation field
+            setCustomHostnameVerifier(entry);
+
+            // Step 2: Download the server certificate from the given URL without SSL validation
+            X509Certificate cert = downloadCertificate(entry.getUrl());
             System.out.println("Cert Downloaded");
 
-            // Step 2: Save the downloaded certificate to a file
+            // Step 3: Save the downloaded certificate to a file
             String certFilePath = "server-cert.cer";
             saveCertificateToFile(cert, certFilePath);
 
-            // Step 3: Add the certificate to the JRE truststore using keytool
+            // Step 4: Add the certificate to the JRE truststore using keytool
             addCertificateToTruststoreWithKeyTool(certFilePath);
 
-            // Step 4: Update the default SSL context to use the updated truststore
+            // Step 5: Update the default SSL context to use the updated truststore
             setDefaultSSLContext();
             System.out.println("Server certificate trusted successfully and SSL context updated.");
 
-            // Step 5: Make a secure connection to the server again to prove it works
-            URL url = new URL(jnlpUrl);
+            // Step 6: Make a secure connection to the server again to prove it works
+            URL url = new URL(entry.getUrl());
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setHostnameVerifier((hostname, session) -> true);  // Use this for non-prod certs
-
             connection.connect();  // Attempt to connect again using the updated truststore
-            System.out.println("Successfully connected to the server: " + jnlpUrl);
+            System.out.println("Successfully connected to the server: " + entry.getUrl());
 
         } catch (SSLHandshakeException e) {
             System.err.println("SSL Handshake Exception encountered.");
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Failed to trust URL: " + jnlpUrl);
+            System.err.println("Failed to trust URL: " + entry.getUrl());
         }
     }
 
@@ -154,7 +163,8 @@ public class TrustStoreManager {
             System.exit(1);
         }
 
-        String jnlpUrl = args[0];
-        trustUrl(jnlpUrl);
+        // Create LaunchEntry and pass it to the trustUrl method
+        LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true); // Example entry
+        trustUrl(entry);
     }
 }
