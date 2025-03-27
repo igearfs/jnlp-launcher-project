@@ -30,6 +30,7 @@ public class JnlpLauncherApp extends Application {
     private Button saveButton;
     private boolean isModified;
 
+    private TextField searchField;  // Added search field
     private Stage primaryStage; // Store primaryStage here
 
     @Override
@@ -88,7 +89,24 @@ public class JnlpLauncherApp extends Application {
         Button addButton = new Button("Add Entry");
         addButton.setOnAction(e -> showAddEntryPopup());
 
+        // Create search field and magnifying glass icon (on the same row)
+        HBox searchBox = new HBox(5);
+        searchField = new TextField();
+        searchField.setPromptText("Search...");
+        searchField.setPrefWidth(250); // Shortened text field
+        searchField.setOnKeyTyped(e-> filterList(searchField.getText()));
+        ImageView searchIcon = new ImageView(new Image(getClass().getResourceAsStream("/search.png")));
+        searchIcon.setFitWidth(20);
+        searchIcon.setFitHeight(20);
+
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(searchField, searchIcon);
+        searchBox.setPrefWidth(Double.MAX_VALUE);
+
+        // Add the search field and add button to the left pane
+        leftPane.getChildren().add(searchBox);
         leftPane.getChildren().add(addButton);
+
         listView.setOnMouseClicked(e -> updateRightPane());
         leftPane.getChildren().add(listView);
         return leftPane;
@@ -140,17 +158,46 @@ public class JnlpLauncherApp extends Application {
         popupStage.showAndWait();
     }
 
-    private void populateListView() {
+    private void filterList(String searchText) {
+        // Clear the list and add back the filtered entries
         listView.getItems().clear();
         for (LaunchEntry entry : entries) {
-            HBox hbox = new HBox(10);
-            hbox.setAlignment(Pos.CENTER_LEFT);
-            ImageView imageView = new ImageView(new Image(getClass().getResource("/rocket.gif").toExternalForm()));
-            imageView.setFitWidth(32);
-            imageView.setFitHeight(32);
-            Label nameLabel = new Label(entry.getName());
-            hbox.getChildren().addAll(imageView, nameLabel);
-            listView.getItems().add(hbox);
+            if (entry.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                    entry.getUrl().toLowerCase().contains(searchText.toLowerCase()) ||
+                    entry.getId().toLowerCase().contains(searchText.toLowerCase()) ||
+                    entry.getNote().toLowerCase().contains(searchText.toLowerCase())) {
+
+                HBox hbox = new HBox(10);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+                ImageView imageView = new ImageView(new Image(getClass().getResource("/rocket.gif").toExternalForm()));
+                imageView.setFitWidth(32);
+                imageView.setFitHeight(32);
+                Label nameLabel = new Label(entry.getName());
+                hbox.getChildren().addAll(imageView, nameLabel);
+                listView.getItems().add(hbox);
+            }
+        }
+    }
+
+    private void populateListView() {
+        listView.getItems().clear();
+        // After saving, reapply the search filter (keep the current search text)
+        String currentSearchText = searchField.getText();
+        if(!currentSearchText.isEmpty())
+        {
+            filterList(currentSearchText);  // Reapply search
+        }
+        else {
+            for (LaunchEntry entry : entries) {
+                HBox hbox = new HBox(10);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+                ImageView imageView = new ImageView(new Image(getClass().getResource("/rocket.gif").toExternalForm()));
+                imageView.setFitWidth(32);
+                imageView.setFitHeight(32);
+                Label nameLabel = new Label(entry.getName());
+                hbox.getChildren().addAll(imageView, nameLabel);
+                listView.getItems().add(hbox);
+            }
         }
     }
 
@@ -225,12 +272,21 @@ public class JnlpLauncherApp extends Application {
 
             // Call the JnlpLauncher.main method with the URL
             try {
-                JnlpLauncher.main(new String[]{url});  // Assuming JnlpLauncher.main(String url) exists
+                JnlpLauncher.loadJnlpAndLaunch(url);  // Assuming JnlpLauncher.main(String url) exists
             } catch (Exception e) {
                 // Handle any potential exceptions from JnlpLauncher.main
-                System.err.println("Error launching JNLP entry: " + e.getMessage());
+                showErrorAlert(e.getMessage());
             }
         }
+    }
+
+    // Method to show error alert
+    private void showErrorAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occurred");
+        alert.setContentText(errorMessage);
+        alert.showAndWait();  // This will show the alert and wait for the user to close it
     }
 
     public static void main(String[] args) {
