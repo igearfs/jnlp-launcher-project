@@ -1,4 +1,4 @@
-package com.igearfs;
+package com.igearfs.jnlp;
 
 public class Main {
 

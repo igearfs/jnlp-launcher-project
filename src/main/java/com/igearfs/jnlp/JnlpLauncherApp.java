@@ -1,5 +1,7 @@
-package com.igearfs;
+package com.igearfs.jnlp;
 
+import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.util.LaunchEntryManager;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.igearfs.LaunchEntryManager.saveEntriesToFile;
+import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
 public class JnlpLauncherApp extends Application {
 
@@ -208,7 +210,27 @@ public class JnlpLauncherApp extends Application {
     }
 
     private void launchSelectedEntry() {
-        // Launch logic here
+        // Get the selected item in the ListView
+        HBox selectedItem = listView.getSelectionModel().getSelectedItem();
+
+        if (selectedItem != null) {
+            // Find the index of the selected item
+            int selectedIndex = listView.getItems().indexOf(selectedItem);
+
+            // Get the LaunchEntry associated with the selected item
+            LaunchEntry selectedEntry = entries.get(selectedIndex);
+
+            // Get the URL of the selected entry
+            String url = selectedEntry.getUrl();
+
+            // Call the JnlpLauncher.main method with the URL
+            try {
+                JnlpLauncher.main(new String[]{url});  // Assuming JnlpLauncher.main(String url) exists
+            } catch (Exception e) {
+                // Handle any potential exceptions from JnlpLauncher.main
+                System.err.println("Error launching JNLP entry: " + e.getMessage());
+            }
+        }
     }
 
     public static void main(String[] args) {

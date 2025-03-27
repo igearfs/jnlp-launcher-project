@@ -1,4 +1,4 @@
-package com.igearfs;
+package com.igearfs.jnlp.security;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -9,8 +9,8 @@ import java.security.cert.X509Certificate;
 
 public class TrustStoreManager {
 
-    // Specify the local JRE path directly (Replace with the path to your local JRE)
-    private static final String LOCAL_JRE_PATH = "jre";  // Set the local path to your JRE
+    // Dynamically get the JRE path using the system property
+    private static final String LOCAL_JRE_PATH = System.getProperty("java.home");  // Dynamically set the local path to the system JRE
     private static final String TRUSTSTORE_PATH = LOCAL_JRE_PATH + "/lib/security/cacerts";
     private static final String TRUSTSTORE_PASSWORD = "changeit"; // Default password for the truststore
 

@@ -1,4 +1,4 @@
-package com.igearfs;
+package com.igearfs.jnlp.model;
 
 // Simple LaunchEntry class to hold name, URL, note, and ID
 public class LaunchEntry {
