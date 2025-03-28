@@ -1,25 +1,27 @@
 package com.igearfs.jnlp.model;
 
-// Simple LaunchEntry class to hold name, URL, note, ID, and ignoreDomainValidation flag
+// Simple LaunchEntry class to hold name, URL, note, ID, ignoreDomainValidation, and iconPath
 public class LaunchEntry {
     private String id;
     private String name;
     private String url;
     private String note;
     private boolean ignoreDomainValidation; // New field
+    private String iconPath; // New field for the icon path
 
-    // Constructor with ignoreDomainValidation
-    public LaunchEntry(String name, String url, String note, String id, boolean ignoreDomainValidation) {
+    // Constructor with ignoreDomainValidation and iconPath
+    public LaunchEntry(String name, String url, String note, String id, boolean ignoreDomainValidation, String iconPath) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.note = note;
         this.ignoreDomainValidation = ignoreDomainValidation; // Store checkbox value
+        this.iconPath = iconPath; // Store icon path
     }
 
-    // Constructor for older data (defaults ignoreDomainValidation to true)
+    // Constructor for older data (defaults ignoreDomainValidation to true and iconPath to "/rocket.png")
     public LaunchEntry(String name, String url, String note, String id) {
-        this(name, url, note, id, true);
+        this(name, url, note, id, true, "/icons/rocket.png");
     }
 
     // Getter and Setter methods
@@ -59,6 +61,14 @@ public class LaunchEntry {
         this.ignoreDomainValidation = ignoreDomainValidation;
     }
 
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
+    }
+
     @Override
     public String toString() {
         return "LaunchEntry{" +
@@ -67,6 +77,7 @@ public class LaunchEntry {
                 ", url='" + url + '\'' +
                 ", note='" + note + '\'' +
                 ", ignoreDomainValidation=" + ignoreDomainValidation +
+                ", iconPath='" + iconPath + '\'' +
                 '}';
     }
 }

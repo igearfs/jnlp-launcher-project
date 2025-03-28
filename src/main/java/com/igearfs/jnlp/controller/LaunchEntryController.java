@@ -3,6 +3,7 @@ package com.igearfs.jnlp.controller;
 import com.igearfs.jnlp.JnlpLauncher;
 import com.igearfs.jnlp.JnlpLauncherApp;
 import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.net.URL;
 import java.util.List;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
@@ -55,7 +57,7 @@ public class LaunchEntryController {
             selectedEntry.setUrl(urlField.getText());
             selectedEntry.setNote(noteField.getText());
             selectedEntry.setIgnoreDomainValidation(ignoreDomainCheckBox.isSelected());
-
+            selectedEntry.setIconPath(ColorGridCell.lastSelectedCell.getIconName());
             LaunchEntryManager.saveEntriesToFile(entries);
             populateListView();
 
@@ -73,16 +75,40 @@ public class LaunchEntryController {
     public void populateListView() {
         listViewJnlp.getItems().clear();
         String currentSearchText = searchField.getText();
+
         if (!currentSearchText.isEmpty()) {
             filterList(currentSearchText);
         } else {
             for (LaunchEntry entry : entries) {
                 HBox hbox = new HBox(10);
                 hbox.setAlignment(Pos.CENTER_LEFT);
-                ImageView imageView = new ImageView(new Image(getClass().getResource("/rocket.gif").toExternalForm()));
+
+                // Get the icon path from the entry
+                String iconPath = "/icons/" + entry.getIconPath();
+
+                // Create the ImageView for the icon
+                ImageView imageView;
+                try {
+                    // If the iconPath is relative and inside the resources folder, use getResource
+                    URL iconUrl = getClass().getResource(iconPath);  // Assumes iconPath is a relative path inside resources
+                    if (iconUrl != null) {
+                        imageView = new ImageView(new Image(iconUrl.toExternalForm()));
+                    } else {
+                        // If the icon is not found, use a fallback icon
+                        imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
+                    }
+                } catch (Exception e) {
+                    // If there's an error loading the image, fall back to default icon
+                    imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
+                }
+
                 imageView.setFitWidth(32);
                 imageView.setFitHeight(32);
+
+                // Create the name label
                 Label nameLabel = new Label(entry.getName());
+
+                // Add the icon and label to the HBox
                 hbox.getChildren().addAll(imageView, nameLabel);
                 listViewJnlp.getItems().add(hbox);
             }
@@ -99,15 +125,39 @@ public class LaunchEntryController {
 
                 HBox hbox = new HBox(10);
                 hbox.setAlignment(Pos.CENTER_LEFT);
-                ImageView imageView = new ImageView(new Image(getClass().getResource("/rocket.gif").toExternalForm()));
+
+                // Get the icon path from the entry
+                String iconPath = entry.getIconPath();
+
+                // Create the ImageView for the icon
+                ImageView imageView;
+                try {
+                    // If the iconPath is relative and inside the resources folder, use getResource
+                    URL iconUrl = getClass().getResource(iconPath);  // Assumes iconPath is a relative path inside resources
+                    if (iconUrl != null) {
+                        imageView = new ImageView(new Image(iconUrl.toExternalForm()));
+                    } else {
+                        // If the icon is not found, use a fallback icon
+                        imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
+                    }
+                } catch (Exception e) {
+                    // If there's an error loading the image, fall back to default icon
+                    imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
+                }
+
                 imageView.setFitWidth(32);
                 imageView.setFitHeight(32);
+
+                // Create the name label
                 Label nameLabel = new Label(entry.getName());
+
+                // Add the icon and label to the HBox
                 hbox.getChildren().addAll(imageView, nameLabel);
                 listViewJnlp.getItems().add(hbox);
             }
         }
     }
+
 
 
     public void launchSelectedEntry() {
