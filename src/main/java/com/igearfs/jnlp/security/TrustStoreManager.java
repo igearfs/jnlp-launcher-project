@@ -164,7 +164,7 @@ public class TrustStoreManager {
         }
 
         // Create LaunchEntry and pass it to the trustUrl method
-        LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true); // Example entry
+        LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket"); // Example entry
         trustUrl(entry);
     }
 }

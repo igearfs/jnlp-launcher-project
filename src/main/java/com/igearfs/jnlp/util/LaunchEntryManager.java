@@ -20,21 +20,29 @@ public class LaunchEntryManager {
                     String[] parts = line.split("\\|");
 
                     boolean ignoreDomainValidation = true; // Default to true for older entries
+                    String iconPath = "/icons/rocket.png"; // Default icon path
 
                     if (parts.length == 3) { // Old format (name, url, note)
-                        parts = new String[]{parts[0], parts[1], parts[2], UUID.randomUUID().toString(), "true"};
+                        parts = new String[]{parts[0], parts[1], parts[2], UUID.randomUUID().toString(), "true", iconPath};
                         newSaves = true;
                     } else if (parts.length == 2) { // Even older format (name, url)
-                        parts = new String[]{parts[0], parts[1], "", UUID.randomUUID().toString(), "true"};
+                        parts = new String[]{parts[0], parts[1], "", UUID.randomUUID().toString(), "true", iconPath};
                         newSaves = true;
                     } else if (parts.length == 4) { // Entries missing ignoreDomainValidation
-                        parts = new String[]{parts[0], parts[1], parts[2], parts[3], "true"};
+                        parts = new String[]{parts[0], parts[1], parts[2], parts[3], "true", iconPath};
                         newSaves = true;
-                    } else if (parts.length == 5) { // New format with ignoreDomainValidation
+                    } else if (parts.length == 5) { // New format with ignoreDomainValidation and missing icon
                         ignoreDomainValidation = Boolean.parseBoolean(parts[4]);
+                        parts = new String[]{parts[0], parts[1], parts[2], parts[3], String.valueOf(ignoreDomainValidation), iconPath};
+                        newSaves = true;
+                    } else if (parts.length == 6) { // New format with all information
+                        ignoreDomainValidation = Boolean.parseBoolean(parts[4]);
+                        iconPath = parts[5];
+                        newSaves = true;
                     }
 
-                    entries.add(new LaunchEntry(parts[0], parts[1], parts[2], parts[3], ignoreDomainValidation));
+                    // Add the entry to the list
+                    entries.add(new LaunchEntry(parts[0], parts[1], parts[2], parts[3], ignoreDomainValidation, iconPath));
                 }
 
                 if (newSaves) {
@@ -57,7 +65,7 @@ public class LaunchEntryManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE))) {
             for (LaunchEntry entry : entries) {
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
-                        entry.getId() + "|" + entry.isIgnoreDomainValidation());
+                        entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
                 writer.newLine();
             }
             System.out.println("Entries saved to " + DATA_FILE);

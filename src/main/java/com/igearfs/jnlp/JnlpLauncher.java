@@ -37,7 +37,7 @@ public class JnlpLauncher {
 
             // Trust the server certificate by using the default JRE truststore
             // Create LaunchEntry and pass it to the trustUrl method
-            LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true); // Example entry
+            LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket"); // Example entry
 
             // Now SSL verification will trust the JNLP URL server's certificate
             loadJnlpAndLaunch(entry);
