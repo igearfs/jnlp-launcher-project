@@ -58,11 +58,13 @@ Before using the app, generate the icon list:
 
 ✅ **Runs on JVM 17+ or Bundled JRE** – Choose your runtime.  
 ✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
-✅ **🔎 Search Functionality** – Instantly find entries by name or URL.  
-✅ **🚀 One-Click Launch** – Click an entry to launch the JNLP app.  
+✅ **🔎 Search Functionality** – Instantly find entries by name or URL.    
 ✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination.  
 ✅ **🎨 Icon Highlighting** – Selected icons get highlighted, making selection clear.  
 ✅ **📜 Persistent Storage** – Entries and icons persist between sessions.
+✅ **📜 Caches jarfile buy hostname** – In cache folder you will see things like localhost.
+✅ **📜 Works with Mirth Connect 4.5.2 **
+✅ **📜 Works with current Bridgelink fork of Mirth Connect 4.5.2 **
 
 ---
 
