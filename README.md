@@ -54,7 +54,7 @@ Before using the app, generate the icon list:
 
 ## 🌟 **Features**
 
-✅ **Runs on JVM 21+ or Bundled JRE** – Choose your runtime.  
+✅ **Runs on JVM 17+ or Bundled JRE** – Choose your runtime.  
 ✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
 ✅ **🔎 Search Functionality** – Instantly find entries by name or URL.  
 ✅ **🚀 One-Click Launch** – Click an entry to launch the JNLP app.  
