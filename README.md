@@ -1,6 +1,10 @@
-Got it! Here’s the updated README reflecting the **optional bundled JRE**:
+--
 
----
+If you like using the programs feel free to support:
+
+<h1 style="font-size: 36px;">Support this development.</h1>
+
+* [Support me on Ko-fi](https://ko-fi.com/igearfs)
 
 # 🌈 **JNLP Launcher – Beta v1.0** 🌈
 
