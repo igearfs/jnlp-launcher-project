@@ -57,7 +57,7 @@ public class LaunchEntryController {
             selectedEntry.setUrl(urlField.getText());
             selectedEntry.setNote(noteField.getText());
             selectedEntry.setIgnoreDomainValidation(ignoreDomainCheckBox.isSelected());
-            selectedEntry.setIconPath(ColorGridCell.lastSelectedCell.getIconName());
+            selectedEntry.setIconPath(selectedEntry.getIconPath());
             LaunchEntryManager.saveEntriesToFile(entries);
             populateListView();
 

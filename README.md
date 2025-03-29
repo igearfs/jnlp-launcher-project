@@ -1,71 +1,118 @@
-⚠️ WARNING: BACKUP YOUR JNLP_ENTRIES.txt file ⚠️
-Before you run this new program, please make sure to save your JNLP entries! We all know the universe can be unpredictable, and while we certainly don’t like bad juju, it can sometimes sneak in when we least expect it. To avoid any unwanted surprises, backup your data before proceeding!
-
-Remember: We don’t want any bad juju to ruin your day! 😱
+Got it! Here’s the updated README reflecting the **optional bundled JRE**:
 
 ---
-📜 Server Side Public License
 
-📌 This project is licensed under the Server Side Public License (SSPL) v1.0.
+# 🌈 **JNLP Launcher – Beta v1.0** 🌈
 
-------------------------------------------------------------------------------------
+⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
+Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
 
-# JNLP Launcher
+---
 
-This project is a **Java-based launcher** that downloads and runs JAR applications defined in a JNLP file.  
-It includes a **bundled JRE**, so users do not need to have Java installed system-wide.
+📜 **Server Side Public License**  
+📌 This project is licensed under the **Server Side Public License (SSPL) v1.0**.
 
-## Setup Instructions
+---
 
-NOTE: The included JRE is for **Windows**. For other OSes, please download the appropriate JRE from [Adoptium](https://adoptium.net/temurin/releases/).  
-Once downloaded, extract the JRE and rename the folder to `jre`. Place it in the main project directory.
+## 📂 **Setup & Installation**
 
-### Steps:
-1. **Extract the provided `jre.rar`** — this will give you a portable JRE (for Windows currently).
-2. **Start the JNLP server** (e.g., Mirth Connect or your own server).
-3. **Use Maven to build the project**:
-   - Either through your IDE's Maven build tools
-   - Or by running the following command in your terminal:
-   ```bash
-   mvn clean package
-   ```
-   This will create a JAR file in the `target` directory with all dependencies included.
-
-## Running the Launcher
-
-Once the project is built, you can run the launcher using the bundled JRE:
-
-### Command:
+### **1️⃣ Build the Project**
+This project uses **Maven** for dependency management and packaging.  
+To build:
 ```bash
-.\jre\bin\java.exe -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
-```
+mvn clean package
+```  
+After a successful build, the runnable JAR will be located in the `target/` directory.
 
-### How to Use:
-- The **JNLP Launcher** allows you to add, save, and launch entries defined by a name and a JNLP URL.
-- The launcher saves the entries to a file located in your **user's home directory** (`jnlp_entries.txt`).
-- You can update the saved entries or add new ones, and the launcher will automatically update the file.
+### **2️⃣ Run the Launcher**
 
-  **Note**: The `jnlp_entries.txt` file is stored in your home directory to ensure data persistence, even if the cache is cleared.
+#### **Option 1: Use System Java (Requires JVM 21+)**
+```bash
+java -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
+```  
 
-## Features:
-- **Add New Entries**: Manually add a new JNLP entry with a name and URL.
-- **Launch Entries**: Select and launch the defined JNLP entries, which will automatically trust the server certificate for secure connections.
-- **Save and Update Entries**: Modify the name or URL of existing entries and save them back to the `jnlp_entries.txt` file.
-
-### File Location:
-- The `jnlp_entries.txt` file is stored in the **user's home directory**. This ensures that even if the application cache is cleared, your entries are saved.
-
-Example location:
-- **Windows**: `C:\Users\YourUsername\jnlp_entries.txt`
-- **Mac/Linux**: `/Users/YourUsername/jnlp_entries.txt`
-
-### How the Data is Managed:
-- All JNLP entries are loaded from and saved to the `jnlp_entries.txt` file.
-- Each entry consists of a **name** and a **URL** (the URL points to the JNLP file that defines the application to launch).
-
-## Troubleshooting:
-
-- If the application fails to launch or you encounter an issue with a JNLP URL, ensure that the URL is correct and accessible.
-- You can check the `jnlp_entries.txt` file in your home directory to confirm the entries are saved properly.
+#### **Option 2: Use the Bundled JRE (Windows Only)**
+1. **Extract the provided `jre.rar`**
+2. Place the extracted `jre` folder in the project directory
+3. Run the launcher using the included Java runtime:
+   ```bash
+   .\jre\bin\java.exe -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
+   ```  
 
 ---
+
+### **3️⃣ Generate the Icon List**
+Before using the app, generate the icon list:
+- Run **`icon.bat`**
+- This creates `icons_list.txt`, ensuring icons load properly.
+
+---
+
+## 🌟 **Features**
+
+✅ **Runs on JVM 21+ or Bundled JRE** – Choose your runtime.  
+✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
+✅ **🔎 Search Functionality** – Instantly find entries by name or URL.  
+✅ **🚀 One-Click Launch** – Click an entry to launch the JNLP app.  
+✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination.  
+✅ **🎨 Icon Highlighting** – Selected icons get highlighted, making selection clear.  
+✅ **📜 Persistent Storage** – Entries and icons persist between sessions.
+
+---
+
+## 🚀 **How to Use**
+
+### **📌 Adding a New Entry**
+🟢 Click `+ Add`  
+🟢 Fill in Name, URL, and Notes  
+🟢 Click `Select Icon` → Choose an icon → Click `Done`  
+🟢 Click `Save`
+
+### **🔎 Searching for an Entry**
+🔹 Use the **search bar** at the top of the list  
+🔹 Type a **name or URL** to filter results  
+🔹 Click an entry to view/edit details
+
+### **🔧 Editing an Entry**
+🟡 Click an entry in the list  
+🟡 Update fields as needed  
+🟡 Click `Select Icon` to change the icon  
+🟡 Click `Save`
+
+### **❌ Deleting an Entry**
+🔴 Select an entry  
+🔴 Click `Delete`
+
+---
+
+## ⚙ **Technical Details**
+
+- **Data Storage**:
+    - Entries are saved to `jnlp_entries.txt` in the **user's home directory**.
+    - Example locations:
+        - **Windows**: `C:\Users\YourUsername\jnlp_entries.txt`
+        - **Mac/Linux**: `/Users/YourUsername/jnlp_entries.txt`
+
+- **Icon Management**:
+    - Icons are loaded from `resources/icons/` based on `icons_list.txt`.
+    - The grid-based selection system efficiently paginates to prevent performance issues.
+
+---
+
+## ❓ **Troubleshooting**
+
+### 🔹 **JNLP URL Not Working?**
+- Double-check that the **URL is correct and accessible**.
+- Open the URL in a browser to see if it prompts a JNLP download.
+
+### 🔹 **Icons Not Showing?**
+- Ensure `icons_list.txt` is present in `resources/`.
+- Run `icon.bat` to regenerate the list.
+
+### 🔹 **App Fails to Launch?**
+- Make sure you are using **JVM 21+** or the **included JRE** (Windows only).
+- Check the console for errors and missing dependencies.
+
+---
+
+💡 **Enjoy the new features and let us know if you run into any issues!** 🚀

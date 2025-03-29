@@ -8,10 +8,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
@@ -179,25 +176,209 @@ public class JnlpLauncher {
 
     private static String buildClasspath(List<Path> downloadedJars) {
         StringBuilder classpath = new StringBuilder();
+
+        // Include the path to the JavaFX SDK lib directory
+        String javafxLibPath = "javafx-sdk-17.0.14/lib";  // Path to your javafx-sdk lib folder
+        classpath.append(javafxLibPath).append(File.pathSeparator);
+
+        // Add all downloaded JARs to the classpath
         for (Path jar : downloadedJars) {
             if (classpath.length() > 0) {
-                classpath.append(File.pathSeparator);
+                classpath.append(File.pathSeparator); // Add separator between paths
             }
             classpath.append(jar.toString());
         }
+
+        // Add the JARs in the subfolders of the 4.5.2 directory
+        File libFolder = new File("4.5.2");  // Directory with the 4.5.2 JARs
+        addJarFilesFromFolder(libFolder, classpath);
+
         return classpath.toString();
     }
 
+    private static void addJarFilesFromFolder(File folder, StringBuilder classpath) {
+        if (folder.exists() && folder.isDirectory()) {
+            // List all files in the directory and its subdirectories
+            File[] files = folder.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    // Recurse into subdirectories
+                    addJarFilesFromFolder(file, classpath);
+                } else if (file.getName().endsWith(".jar")) {
+                    // Add the JAR file to the classpath
+                    classpath.append(File.pathSeparator).append(file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
     private static void launchApp(String mainClass, String classpath, List<String> appArgs) throws IOException {
+        String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
+
+        // Get the default JRE path from java.home
+        String javaHome = System.getProperty("java.home");
+        String jrePath = javaHome + File.separator + "bin" + File.separator + "java";
+
+        // Check OS and set the correct classpath separator
+        String classpathSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
+
         List<String> command = new ArrayList<>();
-        command.add(JRE_PATH);
+        command.add(jrePath);
+        command.add("--module-path");
+        command.add(javafxPath);
+        command.add("--add-modules");
+        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media");
+
+        // --add-opens (necessary to avoid IllegalAccessError)
+        String[] opens = {
+                "java.base/java.lang", "javafx.base/com.sun.javafx.logging", "javafx.base/com.sun.javafx",
+                "javafx.graphics/com.sun.javafx", "javafx.controls/com.sun.javafx",
+                "javafx.graphics/com.sun.javafx.application", "javafx.graphics/com.sun.javafx.embed",
+                "javafx.graphics/com.sun.javafx.sg.prism", "javafx.graphics/com.sun.prism",
+                "javafx.graphics/com.sun.glass.ui", "javafx.graphics/com.sun.javafx.geom.transform",
+                "javafx.graphics/com.sun.javafx.tk", "javafx.graphics/com.sun.glass.utils",
+                "javafx.controls/com.sun.javafx.scene.control", "javafx.graphics/com.sun.javafx.scene.input",
+                "javafx.graphics/com.sun.javafx.stage", "javafx.graphics/com.sun.javafx.geom",
+                "javafx.graphics/com.sun.javafx.cursor", "javafx.graphics/com.sun.prism.paint",
+                "javafx.graphics/com.sun.javafx.ui", "javafx.graphics/com.sun.javafx.font",
+                "java.desktop/sun.awt", "javafx.graphics/com.sun.javafx.util",
+                "javafx.graphics/com.sun.javafx.scene", "java.base/java.util"
+        };
+
+        for (String open : opens) {
+            command.add("--add-opens");
+            command.add(open + "=ALL-UNNAMED");
+        }
+
+        // Optional: Enable software rendering for JavaFX in case of hardware issues
+        command.add("-Dprism.order=sw");
+
+        // Specify JavaFX native libraries path
+        command.add("-Djava.library.path=" + javafxPath);
+
+        // Classpath for normal JARs and JavaFX JARs
         command.add("-cp");
-        command.add(classpath);
+        command.add(classpath + classpathSeparator + javafxPath + "/*");
+
+        // Main class
         command.add(mainClass);
+
+        // Add application arguments
         command.addAll(appArgs);
 
+        // Print the generated command for debugging
+        System.out.println("Running command: " + String.join(" ", command));
+
+        // Execute using ProcessBuilder (safer than Runtime.exec)
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.inheritIO();
-        processBuilder.start();
+        processBuilder.inheritIO(); // Redirects output to the console
+        Process process = processBuilder.start();
+
+        // Capture output and errors
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.err.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
+
+//    private static void launchApp(String mainClass, String classpath, List<String> appArgs) throws IOException {
+//        String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
+//        String jrePath = "java";  // Ensure absolute path
+//
+//        // Check OS and set the correct classpath separator
+//        String classpathSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
+//
+//        List<String> command = new ArrayList<>();
+//        command.add(jrePath);
+//        command.add("--module-path");
+//        command.add(javafxPath);
+//        command.add("--add-modules");
+//        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media");
+//
+//        // --add-opens (necessary to avoid IllegalAccessError)
+//        String[] opens = {
+//                "java.base/java.lang", "javafx.base/com.sun.javafx.logging", "javafx.base/com.sun.javafx",
+//                "javafx.graphics/com.sun.javafx", "javafx.controls/com.sun.javafx",
+//                "javafx.graphics/com.sun.javafx.application", "javafx.graphics/com.sun.javafx.embed",
+//                "javafx.graphics/com.sun.javafx.sg.prism", "javafx.graphics/com.sun.prism",
+//                "javafx.graphics/com.sun.glass.ui", "javafx.graphics/com.sun.javafx.geom.transform",
+//                "javafx.graphics/com.sun.javafx.tk", "javafx.graphics/com.sun.glass.utils",
+//                "javafx.controls/com.sun.javafx.scene.control", "javafx.graphics/com.sun.javafx.scene.input",
+//                "javafx.graphics/com.sun.javafx.stage", "javafx.graphics/com.sun.javafx.geom",
+//                "javafx.graphics/com.sun.javafx.cursor", "javafx.graphics/com.sun.prism.paint",
+//                "javafx.graphics/com.sun.javafx.ui", "javafx.graphics/com.sun.javafx.font",
+//                "java.desktop/sun.awt", "javafx.graphics/com.sun.javafx.util",
+//                "javafx.graphics/com.sun.javafx.scene","java.base/java.util"
+//        };
+//
+//        for (String open : opens) {
+//            command.add("--add-opens");
+//            command.add(open + "=ALL-UNNAMED");
+//        }
+//
+//        // Optional: Enable software rendering for JavaFX in case of hardware issues
+//        command.add("-Dprism.order=sw");
+//
+//        // Specify JavaFX native libraries path
+//        command.add("-Djava.library.path=" + javafxPath);
+//
+//        // Classpath for normal JARs and JavaFX JARs
+//        command.add("-cp");
+//        command.add(classpath + classpathSeparator + javafxPath + "/*");
+//
+//        // Main class
+//        command.add(mainClass);
+//
+//        // Add application arguments
+//        command.addAll(appArgs);
+//
+//        // Print the generated command for debugging
+//        System.out.println("Running command: " + String.join(" ", command));
+//
+//        // Execute using ProcessBuilder (safer than Runtime.exec)
+//        ProcessBuilder processBuilder = new ProcessBuilder(command);
+//        processBuilder.inheritIO(); // Redirects output to the console
+//        Process process = processBuilder.start();
+//
+//        // Capture output and errors
+//        new Thread(() -> {
+//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    System.out.println(line);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    System.err.println(line);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
+
 }
