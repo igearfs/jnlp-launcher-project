@@ -8,6 +8,8 @@ If you like using the programs feel free to support:
 
 # 🌈 **JNLP Launcher – Beta v1.0** 🌈
 
+* Works with Mirth Connect 4.5.2 
+
 ⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
 Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
 
