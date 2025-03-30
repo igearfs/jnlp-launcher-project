@@ -13,6 +13,7 @@ If you like using the programs feel free to support:
 ⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
 Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
 
+⚠️ ** MOVE YOUR FILE INTO THE DATA DIRECTORY FROM THE OLD PATH ON WINDOWS: C:\Users\<username> INTO THE DATA FOLDER IN THE PROJECT **
 ---
 
 📜 **Server Side Public License**  
@@ -34,7 +35,7 @@ After a successful build, the runnable JAR will be located in the `target/` dire
 
 #### **Option 1: Use System Java (Requires JVM 21+)**
 ```bash
-java -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
+java -jar .\target\SyncSyndicate-launcher.jar
 ```  
 
 #### **Option 2: Use the Bundled JRE (Windows Only)**
@@ -42,7 +43,7 @@ java -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
 2. Place the extracted `jre` folder in the project directory
 3. Run the launcher using the included Java runtime:
    ```bash
-   .\jre\bin\java.exe -jar .\target\jnlp-launcher-1.0-SNAPSHOT.jar
+   .\jre\bin\java.exe -jar .\target\SyncSyndicate-launcher.jar
    ```  
 
 ---
@@ -98,8 +99,8 @@ Before using the app, generate the icon list:
 - **Data Storage**:
     - Entries are saved to `jnlp_entries.txt` in the **user's home directory**.
     - Example locations:
-        - **Windows**: `C:\Users\YourUsername\jnlp_entries.txt`
-        - **Mac/Linux**: `/Users/YourUsername/jnlp_entries.txt`
+        - **Windows**: `.\data\jnlp_entries.txt`
+        - **Mac/Linux**: `./data/jnlp_entries.txt`
 
 - **Icon Management**:
     - Icons are loaded from `resources/icons/` based on `icons_list.txt`.

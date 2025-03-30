@@ -100,7 +100,7 @@ public class JnlpLauncherApp extends Application {
 
         // Set button actions
         launchButton.setOnAction(e -> controller.launchSelectedEntry());
-        saveButton.setOnAction(e -> controller.saveSelectedEntry());
+
         deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
     }
 
@@ -234,6 +234,7 @@ public class JnlpLauncherApp extends Application {
                 // Update the ImageView with the selected icon in the main screen
                 iconImageView.setImage(selectedImage);
 
+
             }
 
             // Close the dialog after the selection is made
@@ -315,6 +316,7 @@ public class JnlpLauncherApp extends Application {
     }
 
     private void updateRightPane() {
+        ColorGridCell.lastSelectedCell = null;
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
@@ -338,7 +340,7 @@ public class JnlpLauncherApp extends Application {
                     iconImageView.setImage(new Image(iconStream));
                 } else {
                     // If the default icon is not found, use a placeholder or null image
-                    iconImageView.setImage(new Image("file:/path/to/your/placeholder.png")); // Or use a local fallback image
+                    iconImageView.setImage(new Image("")); // Or use a local fallback image
                 }
             }
 
@@ -355,7 +357,10 @@ public class JnlpLauncherApp extends Application {
             // Button to select a new icon
             Button selectIconButton = new Button("Select Icon");
 
-            selectIconButton.setOnAction(e -> showIconChooserForNewEntry(iconImageView));
+            selectIconButton.setOnAction(e ->
+                    showIconChooserForNewEntry(iconImageView)
+
+            );
 
             VBox rightPane = (VBox) ((SplitPane) primaryStage.getScene().getRoot()).getItems().get(1);
 
@@ -376,6 +381,7 @@ public class JnlpLauncherApp extends Application {
             // Enable buttons and checkbox
             launchButton.setDisable(false);
             saveButton.setDisable(false);
+            saveButton.setOnAction(e -> controller.saveSelectedEntry(iconImageView));
             deleteButton.setDisable(false);
             ignoreDomainCheckBox.setDisable(false);
         }

@@ -56,7 +56,11 @@ public class IconLoader {
 
     public static ImageView loadIcon(String iconName) {
         ImageView imageView = null;
-
+        if(iconName.isEmpty() || iconName.equalsIgnoreCase("null"))
+        {
+            iconName = "rocket.png";
+        }
+        System.out.println("Loading icon: " + iconName);
         Image iconImage = new Image(IconLoader.class.getResourceAsStream("/icons/" + iconName));
         if (iconImage != null) {
             // Create an ImageView for each icon

@@ -1,0 +1,1 @@
+Mirth Connect|https://localhost:8443/webstart|Notes|46148023-c5b1-47b8-8ecd-d10afa0bf96a|true|1F1E6.png
