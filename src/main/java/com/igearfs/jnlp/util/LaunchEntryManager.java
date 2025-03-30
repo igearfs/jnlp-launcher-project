@@ -7,7 +7,7 @@ import java.util.*;
 
 public class LaunchEntryManager {
 
-    private static final String DATA_FILE = System.getProperty("user.home") + File.separator + "jnlp_entries.txt";
+    private static final String DATA_FILE = "./data/jnlp_entries.txt";
 
     public static void loadEntriesFromFile(List<LaunchEntry> entries) {
         File dataFile = new File(DATA_FILE);

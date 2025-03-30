@@ -40,12 +40,10 @@ public class LaunchEntryController {
         this.ignoreDomainCheckBox = app.getIgnoreDomainCheckBox();
         this.listViewJnlp = app.getListViewJnlp();
         this.searchField = app.getSearchField();
-        // Set button actions
-        this.saveButton.setOnAction(e -> saveSelectedEntry());
-        this.launchButton.setOnAction(e -> launchSelectedEntry());
+
     }
 
-    public void saveSelectedEntry() {
+    public void saveSelectedEntry(ImageView iconImageView) {
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
@@ -57,7 +55,9 @@ public class LaunchEntryController {
             selectedEntry.setUrl(urlField.getText());
             selectedEntry.setNote(noteField.getText());
             selectedEntry.setIgnoreDomainValidation(ignoreDomainCheckBox.isSelected());
-            selectedEntry.setIconPath(selectedEntry.getIconPath());
+            if(ColorGridCell.lastSelectedCell != null) {
+                selectedEntry.setIconPath(ColorGridCell.lastSelectedCell.getIconName());
+            }
             LaunchEntryManager.saveEntriesToFile(entries);
             populateListView();
 
