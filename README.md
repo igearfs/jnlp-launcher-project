@@ -40,18 +40,19 @@ After a successful build, the runnable JAR will be located in the `target/` dire
 
 ### **2️⃣ Run the Launcher**
 
-#### **Option 1: Use System Java (Requires JVM 21+)**
+#### **Option 1: Use System Java (Requires JVM 17+)**
 ```bash
 java -jar .\target\SyncSyndicate-launcher.jar
 ```  
 
 #### **Option 2: Use the Bundled JRE (Windows Only)**
 1. **Extract the provided `jre.rar`**
-2. Place the extracted `jre` folder in the project directory
-3. Run the launcher using the included Java runtime:
+2. Run the launcher using the included Java runtime:
    ```bash
    .\jre\bin\java.exe -jar .\target\SyncSyndicate-launcher.jar
    ```  
+#### **Option 3: use the exe generated (Windows Only 64 bit systems)*
+1. Install the generated exe file. SyncSyndicate-1.0.1.exe <-- version may be different as bugs are squashed...
 
 ---
 
