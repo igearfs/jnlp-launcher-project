@@ -7,14 +7,18 @@ import java.util.*;
 
 public class LaunchEntryManager {
 
-    private static final String DATA_FILE = "./data/jnlp_entries.txt";
-
+    private static final String DATA_FILE = "jnlp_entries.txt";
+    private static final String USER_DATA_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/data";
     public static void loadEntriesFromFile(List<LaunchEntry> entries) {
-        File dataFile = new File(DATA_FILE);
+        File dataDirectory = new File(USER_DATA_DIR);
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdirs();
+        }
+        File dataFile = new File(USER_DATA_DIR + "/" + DATA_FILE);
         boolean newSaves = false;
 
         if (dataFile.exists() && dataFile.length() > 0) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(DATA_FILE))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_DIR + "/" + DATA_FILE))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("\\|");
@@ -49,7 +53,7 @@ public class LaunchEntryManager {
                     saveEntriesToFile(entries); // Save to update old format entries
                 }
 
-                System.out.println("Entries loaded from " + DATA_FILE);
+                System.out.println("Entries loaded from " + USER_DATA_DIR + "/" + DATA_FILE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -62,13 +66,13 @@ public class LaunchEntryManager {
     }
 
     public static void saveEntriesToFile(List<LaunchEntry> entries) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_DIR + "/" + DATA_FILE))) {
             for (LaunchEntry entry : entries) {
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
                         entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
                 writer.newLine();
             }
-            System.out.println("Entries saved to " + DATA_FILE);
+            System.out.println("Entries saved to " + USER_DATA_DIR + "/" + DATA_FILE);
         } catch (IOException e) {
             e.printStackTrace();
         }
