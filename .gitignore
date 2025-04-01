@@ -1,0 +1,32 @@
+# Ignore target build output
+target/
+
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# Ignore Maven wrapper files
+.mvn/
+
+# Ignore local configuration files
+*.iml
+*.log
+*.class
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Maven dependency folder (optional, as dependencies are downloaded during build)
+.m2/
+*.cer
+jnlp_cache/*.jar
+
+/javafx-sdk-17.0.14/bin/
+/javafx-sdk-17.0.14/src.zip
+/3.6.1
+/jarfile
+/jdk17_64
+
+
+# Project exclude paths
+/jre/
