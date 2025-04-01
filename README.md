@@ -18,8 +18,8 @@ Before running this version, **make a backup** of your JNLP entries! The univers
 
 ---
 
-📜 **Server Side Public License**  
-📌 This project is licensed under the **Server Side Public License (SSPL) v1.0**.
+📜 **GNU GENERAL PUBLIC LICENSE Version 3**  
+📌 This project is licensed under the **GNU GENERAL PUBLIC LICENSE Version 3**.
 
 ---
 
