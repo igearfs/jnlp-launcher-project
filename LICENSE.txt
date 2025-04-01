@@ -1,14 +1,23 @@
 In-Game Event, A Red Flag Syndicate LLC - License Information
 
-This software package includes the following components which are subject to their respective licenses:
+This software package includes the following components, which are subject to their respective licenses:
 
-1. **Java Runtime Environment (JRE)**
-   - This product requires a Java Runtime Environment (JRE) to run. The JRE is licensed under the [Oracle Binary Code License Agreement](https://www.oracle.com/java/technologies/javase-jre8-downloads.html) or an equivalent license. Please refer to the JRE documentation and Oracle's licensing terms for more information regarding its use.
+    Temurin Java Runtime Environment (JRE)
 
-2. **WiX Toolset**
-   - This software uses the WiX Toolset for creating Windows installers. The WiX Toolset is licensed under the [WiX License](https://wixtoolset.org/). You can review the full license and terms of use for WiX on their official website.
+        This product requires the Temurin JRE to run. Temurin is a build of OpenJDK provided by Adoptium and is licensed under the Adoptium Terms and Conditions, which are based on the OpenJDK license. You can refer to the Adoptium website for more information on the JRE and its usage.
 
-3. **JavaFX**
-   - This software includes JavaFX, which is part of the OpenJDK distribution. JavaFX is licensed under the [GNU General Public License, version 2, with the Classpath Exception](https://openjdk.java.net/projects/openjfx/). Please refer to the official JavaFX documentation and licensing terms for further details on its usage.
+    WiX Toolset
 
-By using this software, you acknowledge that you have read, understood, and agree to abide by the terms and conditions of these licenses.
+        This software uses the WiX Toolset for creating Windows installers. The WiX Toolset is licensed under the WiX License. You can review the full license and terms of use for WiX on their official website.
+
+    JavaFX
+
+        This software includes JavaFX, which is part of the OpenJDK distribution. JavaFX is licensed under the GNU General Public License, version 2, with the Classpath Exception. Please refer to the official JavaFX documentation and licensing terms for further details on its usage.
+
+    Project License - GPL-3.0
+
+        This project is licensed under the GNU General Public License, version 3 (GPL-3.0). You can freely use, modify, and distribute the software, but any modifications must also be released under the GPL-3.0 license.
+
+        For more details, please refer to the full text of the GPL-3.0 License.
+
+By using this software, you acknowledge that you have read, understood, and agree to abide by the terms and conditions of the licenses above, including the GPL-3.0 license for this project.
