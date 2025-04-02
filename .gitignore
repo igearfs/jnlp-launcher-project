@@ -26,7 +26,3 @@ jnlp_cache/*.jar
 /3.6.1
 /jarfile
 /jdk17_64
-
-
-# Project exclude paths
-/jre/
