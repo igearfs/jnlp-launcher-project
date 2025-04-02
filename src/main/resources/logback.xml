@@ -1,0 +1,41 @@
+<!--
+  ~ Copyright (c) 2025. All rights reserved.
+  ~ This software is protected under the intellectual property laws of the United States and international copyright treaties.
+  ~ Unauthorized copying, modification, distribution, or reverse engineering of this software is strictly prohibited.
+  ~ By using this software, you agree to comply with the terms and conditions outlined in the license agreement provided with the product.
+  ~ Any use of the software outside the bounds of this agreement is subject to legal action.
+  ~
+  -->
+
+<configuration>
+
+    <!-- Console Appender (Logs to Console) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling File Appender (Log files rotate daily) -->
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern> <!-- New file daily -->
+            <maxHistory>7</maxHistory> <!-- Keep logs for 7 days -->
+            <totalSizeCap>100MB</totalSizeCap> <!-- Prevent excessive disk usage -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger for a specific package (DEBUG Level) -->
+    <logger name="com.mycompany" level="debug"/>
+
+    <!-- Root Logger (INFO level, logs to Console & Rolling File) -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROLLING_FILE"/>
+    </root>
+
+</configuration>
