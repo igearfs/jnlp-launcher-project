@@ -19,7 +19,7 @@ import java.util.List;
 
 public class JnlpLauncher {
 
-    private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
+    private static final String CACHE_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/jnlp_cache";  // Cache directory
     private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
 
     public static void main(String[] args) {
@@ -37,7 +37,7 @@ public class JnlpLauncher {
             LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket"); // Example entry
 
             // Now SSL verification will trust the JNLP URL server's certificate
-            loadJnlpAndLaunch(entry);
+            loadJnlpAndLaunch(entry, new LoadingPopup());
 
         } catch (Exception e) {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
@@ -46,7 +46,7 @@ public class JnlpLauncher {
         }
     }
 
-    public static void loadJnlpAndLaunch(LaunchEntry entry) throws Exception {
+    public static void loadJnlpAndLaunch(LaunchEntry entry, LoadingPopup lp) throws Exception {
         try {
             // Trust the server certificate by using the default JRE truststore
             TrustStoreManager.trustUrl(entry);  // Automatically uses the default truststore from JRE
@@ -67,12 +67,12 @@ public class JnlpLauncher {
 
         List<Path> downloadedJars = new ArrayList<>();
         for (String jarUrl : jarUrls) {
-            Path jarPath = downloadJar(jarUrl, jnlpUrl); // Pass jnlpUrl for domain-based cache
+            Path jarPath = downloadJar(jarUrl, jnlpUrl, entry.getName()); // Pass jnlpUrl for domain-based cache
             downloadedJars.add(jarPath);
         }
 
         String classpath = buildClasspath(downloadedJars);
-        launchApp(mainClass, classpath, appArgs);
+        launchApp(mainClass, classpath, appArgs, lp);
     }
 
     private static Document loadJnlp(String jnlpUrl) throws Exception {
@@ -120,10 +120,10 @@ public class JnlpLauncher {
         return appArgs;
     }
 
-    private static Path downloadJar(String jarUrl, String jnlpUrl) throws IOException {
+    private static Path downloadJar(String jarUrl, String jnlpUrl, String nameFromEntry) throws IOException {
         // Generate a cache folder based on the domain
         String domain = getDomainFromUrl(jnlpUrl);
-        Path domainCacheDir = Paths.get(CACHE_DIR, domain);
+        Path domainCacheDir = Paths.get(CACHE_DIR, nameFromEntry + "/" + domain);
         if (!Files.exists(domainCacheDir)) {
             Files.createDirectories(domainCacheDir);
         }
@@ -212,7 +212,7 @@ public class JnlpLauncher {
         }
     }
 
-    private static void launchApp(String mainClass, String classpath, List<String> appArgs) throws IOException {
+    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp) throws IOException {
         String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
 
         // Get the default JRE path from java.home
@@ -273,7 +273,7 @@ public class JnlpLauncher {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.inheritIO(); // Redirects output to the console
         Process process = processBuilder.start();
-
+        lp.hide();
         // Capture output and errors
         new Thread(() -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {

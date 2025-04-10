@@ -141,12 +141,29 @@
                         </goals>
                         <configuration>
                             <target>
+                                <delete file="${project.basedir}/SyncSyndicate-1.0.1.exe" />
                                 <delete dir="${project.basedir}/jnlp_cache" />
                                 <mkdir dir="${project.basedir}/jnlp_cache"/>
                                 <delete dir="${project.basedir}/jarfile" />
                                 <mkdir dir="${project.basedir}/jarfile"/>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
                                       tofile="${project.basedir}/jarfile/${project.artifactId}-${project.version}.jar"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-up</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete file="${project.basedir}/SyncSyndicate-1.0.1.exe" />
+                                <delete dir="${project.basedir}/jnlp_cache" />
+                                <mkdir dir="${project.basedir}/jnlp_cache"/>
+                                <delete dir="${project.basedir}/jarfile" />
+                                <mkdir dir="${project.basedir}/jarfile"/>
                             </target>
                         </configuration>
                     </execution>
