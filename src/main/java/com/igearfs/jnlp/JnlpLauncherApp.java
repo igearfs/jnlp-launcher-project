@@ -438,4 +438,7 @@ public class JnlpLauncherApp extends Application {
     public TextField getSearchField() {
         return this.searchField;
     }
+
+    public Stage getPrimaryStage() { return this.primaryStage; }
+
 }
