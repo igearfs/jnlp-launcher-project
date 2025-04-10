@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
@@ -28,6 +29,8 @@ public class LaunchEntryController {
     private final Button deleteButton;
     private final ListView<HBox> listViewJnlp;
     private final TextField searchField;
+    private LoadingPopup lp = new LoadingPopup();
+    private Stage primaryStage;
 
     public LaunchEntryController(JnlpLauncherApp app) {
         this.app = app;
@@ -41,7 +44,7 @@ public class LaunchEntryController {
         this.ignoreDomainCheckBox = app.getIgnoreDomainCheckBox();
         this.listViewJnlp = app.getListViewJnlp();
         this.searchField = app.getSearchField();
-
+        this.primaryStage = app.getPrimaryStage();
     }
 
     public void saveSelectedEntry(ImageView iconImageView) {
@@ -159,7 +162,6 @@ public class LaunchEntryController {
         }
     }
 
-    private LoadingPopup lp = new LoadingPopup();
 
     public void launchSelectedEntry() {
         lp.show();
