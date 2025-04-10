@@ -21,6 +21,5 @@ Thumbs.db
 *.cer
 jnlp_cache/*.jar
 
-/javafx-sdk-17.0.14/bin/
 /javafx-sdk-17.0.14/src.zip
 

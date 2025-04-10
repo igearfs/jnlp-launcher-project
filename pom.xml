@@ -141,6 +141,8 @@
                         </goals>
                         <configuration>
                             <target>
+                                <delete dir="${project.basedir}/jnlp_cache" />
+                                <mkdir dir="${project.basedir}/jnlp_cache"/>
                                 <delete dir="${project.basedir}/jarfile" />
                                 <mkdir dir="${project.basedir}/jarfile"/>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
