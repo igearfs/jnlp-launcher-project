@@ -2,6 +2,7 @@ package com.igearfs.jnlp.controller;
 
 import com.igearfs.jnlp.JnlpLauncher;
 import com.igearfs.jnlp.JnlpLauncherApp;
+import com.igearfs.jnlp.LoadingPopup;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
@@ -158,9 +159,10 @@ public class LaunchEntryController {
         }
     }
 
-
+    private LoadingPopup lp = new LoadingPopup();
 
     public void launchSelectedEntry() {
+        lp.show();
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
@@ -168,7 +170,7 @@ public class LaunchEntryController {
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
             try {
-                JnlpLauncher.loadJnlpAndLaunch(selectedEntry);
+                JnlpLauncher.loadJnlpAndLaunch(selectedEntry, lp);
             } catch (Exception e) {
                 showErrorAlert(e.getMessage());
             }
