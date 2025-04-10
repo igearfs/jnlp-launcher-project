@@ -13,8 +13,8 @@ If you like using the programs feel free to support:
 ⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
 Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
 
-⚠️ ** MOVE YOUR FILE INTO THE DATA DIRECTORY FROM THE OLD PATH ON WINDOWS to: C:\Users\<username>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt INTO THE DATA FOLDER IN THE PROJECT **
-⚠️ ️ ** If you use the .exe installer let it make the directory for you after the first run and replace or drop in your jnlp_entries.txt into the correct folder. (may be different for installer just look in roaming folders for SyncSyndicate)
+** MOVE YOUR FILE INTO THE DATA DIRECTORY FROM THE OLD PATH ON WINDOWS to: C:\Users\<username>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt INTO THE DATA FOLDER IN THE PROJECT **
+** If you use the .exe installer let it make the directory for you after the first run and replace or drop in your jnlp_entries.txt into the correct folder. (may be different for installer just look in roaming folders for SyncSyndicate)
 
 ---
 
