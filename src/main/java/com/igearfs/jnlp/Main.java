@@ -43,11 +43,6 @@ public class Main {
 
     }
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(Main.class);
-        // Log paths to verify they are correctly set
-        LogManager.logInfo(logger, "Setting logDir: " +  System.getProperty("os.logdir"));
-        LogManager.logInfo(logger, "Setting dataDir: " + System.getProperty("os.dataDir"));
-
         JnlpLauncherApp.main(args);
     }
 }
