@@ -39,8 +39,6 @@ public class Main {
         System.setProperty("os.logdir", logPath);
         System.setProperty("os.dataDir", dataDir);
 
-
-
     }
     public static void main(String[] args) {
         JnlpLauncherApp.main(args);
