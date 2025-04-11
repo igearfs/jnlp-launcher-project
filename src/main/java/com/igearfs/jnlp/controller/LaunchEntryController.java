@@ -2,6 +2,7 @@ package com.igearfs.jnlp.controller;
 
 import com.igearfs.jnlp.JnlpLauncher;
 import com.igearfs.jnlp.JnlpLauncherApp;
+import com.igearfs.jnlp.LoadingPopup;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
