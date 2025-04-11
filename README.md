@@ -6,9 +6,9 @@ If you like using the programs feel free to support:
 
 * [Support me on Ko-fi](https://ko-fi.com/igearfs)
 
-# 🌈 **JNLP Launcher – Beta v1.0** 🌈
+# 🌈 **JNLP Launcher – v1.0.1** 🌈
 
-* Works with Mirth Connect 4.5.2 
+* Works with Mirth Connect 4.5.2
 
 ⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
 Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
@@ -18,14 +18,14 @@ Before running this version, **make a backup** of your JNLP entries! The univers
 
 ---
 
-📜 **Server Side Public License**  
-📌 This project is licensed under the **Server Side Public License (SSPL) v1.0**.
+📜 **GNU GENERAL PUBLIC LICENSE Version 3**  
+📌 This project is licensed under the **GNU GENERAL PUBLIC LICENSE Version 3**.
 
 ---
 
 ⚠️ WARNING: As always, use at your own risk! ⚠️
-By downloading, installing, or running this program, you acknowledge that you are doing so at your own risk. 
-The developer(S)/company is not responsible for any issues, data loss, or damage that may occur as a result of using this software. 
+By downloading, installing, or running this program, you acknowledge that you are doing so at your own risk.
+The developer(S)/company is not responsible for any issues, data loss, or damage that may occur as a result of using this software.
 Please proceed with caution and make sure to back up your files!
 
 ## 📂 **Setup & Installation**
@@ -65,7 +65,8 @@ Before using the app, generate the icon list:
 
 ## 🌟 **Features**
 
-✅ **Runs on JVM 17+ or Bundled JRE** – Choose your runtime.  
+✅ **Runs on JVM 17+ without WIX Installer or Bundled JRE** – Choose your runtime.
+✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** – Choose your runtime.  
 ✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
 ✅ **🔎 Search Functionality** – Instantly find entries by name or URL.    
 ✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination.  

@@ -13,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javafx.stage.Stage;
+
 import java.net.URL;
 import java.util.List;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
@@ -31,6 +33,8 @@ public class LaunchEntryController {
     private final Button deleteButton;
     private final ListView<HBox> listViewJnlp;
     private final TextField searchField;
+    private LoadingPopup lp = new LoadingPopup();
+    private Stage primaryStage;
 
     public LaunchEntryController(JnlpLauncherApp app) {
         this.app = app;
@@ -44,7 +48,7 @@ public class LaunchEntryController {
         this.ignoreDomainCheckBox = app.getIgnoreDomainCheckBox();
         this.listViewJnlp = app.getListViewJnlp();
         this.searchField = app.getSearchField();
-
+        this.primaryStage = app.getPrimaryStage();
     }
 
     public void saveSelectedEntry(ImageView iconImageView) {
@@ -165,8 +169,8 @@ public class LaunchEntryController {
     }
 
 
-
     public void launchSelectedEntry() {
+        lp.show();
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
@@ -174,7 +178,7 @@ public class LaunchEntryController {
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
             try {
-                JnlpLauncher.loadJnlpAndLaunch(selectedEntry);
+                JnlpLauncher.loadJnlpAndLaunch(selectedEntry, lp);
             } catch (Exception e) {
                 LogManager.logError(logger, e.getMessage(), e);
                 showErrorAlert(e.getMessage());
