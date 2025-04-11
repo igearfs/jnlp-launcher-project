@@ -1,12 +1,14 @@
 package com.igearfs.jnlp.util;
 
 import com.igearfs.jnlp.model.LaunchEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
 
 public class LaunchEntryManager {
-
+    private static final Logger logger = LoggerFactory.getLogger(LaunchEntryManager.class);
     private static final String DATA_FILE = "jnlp_entries.txt";
     private static final String USER_DATA_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/data";
     public static void loadEntriesFromFile(List<LaunchEntry> entries) {
@@ -55,6 +57,7 @@ public class LaunchEntryManager {
 
                 System.out.println("Entries loaded from " + USER_DATA_DIR + "/" + DATA_FILE);
             } catch (IOException e) {
+                LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }
         } else {
@@ -74,6 +77,7 @@ public class LaunchEntryManager {
             }
             System.out.println("Entries saved to " + USER_DATA_DIR + "/" + DATA_FILE);
         } catch (IOException e) {
+            LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
         }
 

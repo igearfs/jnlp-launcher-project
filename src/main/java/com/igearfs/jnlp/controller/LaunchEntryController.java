@@ -5,17 +5,21 @@ import com.igearfs.jnlp.JnlpLauncherApp;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
+import com.igearfs.jnlp.util.LogManager;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.List;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
 public class LaunchEntryController {
+    private static final Logger logger = LoggerFactory.getLogger(LaunchEntryController.class);
+
     private final JnlpLauncherApp app;
     private final List<LaunchEntry> entries;
     private final Button saveButton;
@@ -99,6 +103,7 @@ public class LaunchEntryController {
                     }
                 } catch (Exception e) {
                     // If there's an error loading the image, fall back to default icon
+                    LogManager.logError(logger, e.getMessage(), e);
                     imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
                 }
 
@@ -141,6 +146,7 @@ public class LaunchEntryController {
                         imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
                     }
                 } catch (Exception e) {
+                    LogManager.logError(logger, e.getMessage(), e);
                     // If there's an error loading the image, fall back to default icon
                     imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
                 }
@@ -170,6 +176,7 @@ public class LaunchEntryController {
             try {
                 JnlpLauncher.loadJnlpAndLaunch(selectedEntry);
             } catch (Exception e) {
+                LogManager.logError(logger, e.getMessage(), e);
                 showErrorAlert(e.getMessage());
             }
         }

@@ -2,6 +2,10 @@ package com.igearfs.jnlp;
 
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.security.TrustStoreManager;
+import com.igearfs.jnlp.util.LaunchEntryManager;
+import com.igearfs.jnlp.util.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JnlpLauncher {
-
+    private static final Logger logger = LoggerFactory.getLogger(JnlpLauncher.class);
     private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
     private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
 
@@ -42,6 +46,7 @@ public class JnlpLauncher {
         } catch (Exception e) {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
+            LogManager.logError(logger, e.getMessage(), e);
             System.exit(2);
         }
     }
@@ -54,6 +59,7 @@ public class JnlpLauncher {
         } catch (Exception e) {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
+            LogManager.logError(logger, e.getMessage(), e);
         }
         String jnlpUrl = entry.getUrl();
         Document jnlpDoc = loadJnlp(jnlpUrl);
@@ -165,6 +171,7 @@ public class JnlpLauncher {
             URL url = new URL(urlString);
             return url.getHost();  // Extract the domain (host) from the URL
         } catch (Exception e) {
+            LogManager.logError(logger, e.getMessage(), e);
             throw new RuntimeException("Invalid URL: " + urlString, e);
         }
     }
@@ -282,6 +289,7 @@ public class JnlpLauncher {
                     System.out.println(line);
                 }
             } catch (IOException e) {
+                LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }
         }).start();
@@ -293,92 +301,10 @@ public class JnlpLauncher {
                     System.err.println(line);
                 }
             } catch (IOException e) {
+                LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }
         }).start();
     }
-
-//    private static void launchApp(String mainClass, String classpath, List<String> appArgs) throws IOException {
-//        String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
-//        String jrePath = "java";  // Ensure absolute path
-//
-//        // Check OS and set the correct classpath separator
-//        String classpathSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
-//
-//        List<String> command = new ArrayList<>();
-//        command.add(jrePath);
-//        command.add("--module-path");
-//        command.add(javafxPath);
-//        command.add("--add-modules");
-//        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media");
-//
-//        // --add-opens (necessary to avoid IllegalAccessError)
-//        String[] opens = {
-//                "java.base/java.lang", "javafx.base/com.sun.javafx.logging", "javafx.base/com.sun.javafx",
-//                "javafx.graphics/com.sun.javafx", "javafx.controls/com.sun.javafx",
-//                "javafx.graphics/com.sun.javafx.application", "javafx.graphics/com.sun.javafx.embed",
-//                "javafx.graphics/com.sun.javafx.sg.prism", "javafx.graphics/com.sun.prism",
-//                "javafx.graphics/com.sun.glass.ui", "javafx.graphics/com.sun.javafx.geom.transform",
-//                "javafx.graphics/com.sun.javafx.tk", "javafx.graphics/com.sun.glass.utils",
-//                "javafx.controls/com.sun.javafx.scene.control", "javafx.graphics/com.sun.javafx.scene.input",
-//                "javafx.graphics/com.sun.javafx.stage", "javafx.graphics/com.sun.javafx.geom",
-//                "javafx.graphics/com.sun.javafx.cursor", "javafx.graphics/com.sun.prism.paint",
-//                "javafx.graphics/com.sun.javafx.ui", "javafx.graphics/com.sun.javafx.font",
-//                "java.desktop/sun.awt", "javafx.graphics/com.sun.javafx.util",
-//                "javafx.graphics/com.sun.javafx.scene","java.base/java.util"
-//        };
-//
-//        for (String open : opens) {
-//            command.add("--add-opens");
-//            command.add(open + "=ALL-UNNAMED");
-//        }
-//
-//        // Optional: Enable software rendering for JavaFX in case of hardware issues
-//        command.add("-Dprism.order=sw");
-//
-//        // Specify JavaFX native libraries path
-//        command.add("-Djava.library.path=" + javafxPath);
-//
-//        // Classpath for normal JARs and JavaFX JARs
-//        command.add("-cp");
-//        command.add(classpath + classpathSeparator + javafxPath + "/*");
-//
-//        // Main class
-//        command.add(mainClass);
-//
-//        // Add application arguments
-//        command.addAll(appArgs);
-//
-//        // Print the generated command for debugging
-//        System.out.println("Running command: " + String.join(" ", command));
-//
-//        // Execute using ProcessBuilder (safer than Runtime.exec)
-//        ProcessBuilder processBuilder = new ProcessBuilder(command);
-//        processBuilder.inheritIO(); // Redirects output to the console
-//        Process process = processBuilder.start();
-//
-//        // Capture output and errors
-//        new Thread(() -> {
-//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    System.out.println(line);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//
-//        new Thread(() -> {
-//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    System.err.println(line);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//    }
 
 }

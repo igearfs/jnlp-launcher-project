@@ -1,6 +1,10 @@
 package com.igearfs.jnlp.security;
 
 import com.igearfs.jnlp.model.LaunchEntry; // Import LaunchEntry class
+import com.igearfs.jnlp.util.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -10,7 +14,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 public class TrustStoreManager {
-
+    private static final Logger logger = LoggerFactory.getLogger(TrustStoreManager.class);
     // Dynamically get the JRE path using the system property
     private static final String LOCAL_JRE_PATH = System.getProperty("java.home");  // Dynamically set the local path to the system JRE
     private static final String TRUSTSTORE_PATH = LOCAL_JRE_PATH + "/lib/security/cacerts";
@@ -114,6 +118,7 @@ public class TrustStoreManager {
                 try {
                     return hostname.equals(new URL(entry.getUrl()).getHost());
                 } catch (MalformedURLException e) {
+                    LogManager.logError(logger, e.getMessage(), e);
                     throw new RuntimeException("Invalid URL format: " + entry.getUrl(), e);
                 }
             });
@@ -148,9 +153,11 @@ public class TrustStoreManager {
             System.out.println("Successfully connected to the server: " + entry.getUrl());
 
         } catch (SSLHandshakeException e) {
+            LogManager.logError(logger, e.getMessage(), e);
             System.err.println("SSL Handshake Exception encountered.");
             e.printStackTrace();
         } catch (Exception e) {
+            LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
             System.err.println("Failed to trust URL: " + entry.getUrl());
         }
