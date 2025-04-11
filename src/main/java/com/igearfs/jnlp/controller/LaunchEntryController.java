@@ -188,6 +188,7 @@ public class LaunchEntryController {
     }
 
     public void showErrorAlert(String errorMessage) {
+        lp.hide();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("An error occurred");
