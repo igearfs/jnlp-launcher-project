@@ -1,7 +1,11 @@
 package com.igearfs.jnlp.util;
 
+import com.igearfs.jnlp.security.TrustStoreManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IconLoader {
-
+    private static final Logger logger = LoggerFactory.getLogger(IconLoader.class);
     /**
      * Loads icon names from the icons_list.txt file in the resources folder.
      *
@@ -24,6 +28,7 @@ public class IconLoader {
                 iconNames.add(line.trim());  // Add the icon name (remove any surrounding spaces)
             }
         } catch (IOException e) {
+            LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
         }
         return iconNames;

@@ -1,12 +1,16 @@
 package com.igearfs.jnlp.util;
 
+import com.igearfs.jnlp.security.TrustStoreManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColorGridCell extends StackPane {
+    private static final Logger logger = LoggerFactory.getLogger(ColorGridCell.class);
     private ImageView iconImageView;
     private Rectangle backgroundRectangle;
     private String iconName;

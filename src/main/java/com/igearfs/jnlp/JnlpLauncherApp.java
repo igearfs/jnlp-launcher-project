@@ -17,6 +17,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import java.util.UUID;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
 public class JnlpLauncherApp extends Application {
-
+    private static final Logger logger = LoggerFactory.getLogger(JnlpLauncherApp.class);
     private List<LaunchEntry> entries = new ArrayList<>();
     private ListView<HBox> listViewJnlp;
     private TextField nameField;

@@ -1,7 +1,11 @@
 package com.igearfs.jnlp.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 // Simple LaunchEntry class to hold name, URL, note, ID, ignoreDomainValidation, and iconPath
 public class LaunchEntry {
+    private static final Logger logger = LoggerFactory.getLogger(LaunchEntry.class);
     private String id;
     private String name;
     private String url;
