@@ -1,3 +1,9 @@
+<!--
+  ~ Copyright (c) 2025 In-Game Event, A Red Flag Syndicate LLC.
+  ~ All rights reserved.
+  ~
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -5,7 +11,7 @@
 
     <groupId>com.igearfs</groupId>
     <artifactId>SyncSyndicate-launcher</artifactId>
-    <version>1.0.1</version>
+    <version>1.3.1</version>
     <name>jnlp-launcher</name>
 
     <properties>
@@ -154,7 +160,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <delete file="${project.basedir}/SyncSyndicate-1.0.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.1.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.2.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.3.1.exe" />
                                 <delete dir="${project.basedir}/jnlp_cache" />
                                 <mkdir dir="${project.basedir}/jnlp_cache"/>
                                 <delete dir="${project.basedir}/jarfile" />
@@ -172,7 +180,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <delete file="${project.basedir}/SyncSyndicate-1.0.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.1.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.2.1.exe" />
+                                <delete file="${project.basedir}/SyncSyndicate-1.3.1.exe" />
                                 <delete dir="${project.basedir}/jnlp_cache" />
                                 <mkdir dir="${project.basedir}/jnlp_cache"/>
                                 <delete dir="${project.basedir}/jarfile" />

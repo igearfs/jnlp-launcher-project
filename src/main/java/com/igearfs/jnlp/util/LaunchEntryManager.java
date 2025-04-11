@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025 In-Game Event, A Red Flag Syndicate LLC.
+ * All rights reserved.
+ *
+ */
+
 package com.igearfs.jnlp.util;
 
 import com.igearfs.jnlp.model.LaunchEntry;
@@ -10,17 +16,19 @@ import java.util.*;
 public class LaunchEntryManager {
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntryManager.class);
     private static final String DATA_FILE = "jnlp_entries.txt";
-    private static final String USER_DATA_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/data";
+
     public static void loadEntriesFromFile(List<LaunchEntry> entries) {
-        File dataDirectory = new File(USER_DATA_DIR);
+        String dataDir = System.getProperty("os.dataDir");
+
+        File dataDirectory = new File(dataDir);
         if (!dataDirectory.exists()) {
             dataDirectory.mkdirs();
         }
-        File dataFile = new File(USER_DATA_DIR + "/" + DATA_FILE);
+        File dataFile = new File(dataDir + "/" + DATA_FILE);
         boolean newSaves = false;
 
         if (dataFile.exists() && dataFile.length() > 0) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_DIR + "/" + DATA_FILE))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(dataDir + "/" + DATA_FILE))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("\\|");
@@ -55,7 +63,7 @@ public class LaunchEntryManager {
                     saveEntriesToFile(entries); // Save to update old format entries
                 }
 
-                System.out.println("Entries loaded from " + USER_DATA_DIR + "/" + DATA_FILE);
+                System.out.println("Entries loaded from " + dataDir + "/" + DATA_FILE);
             } catch (IOException e) {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
@@ -69,13 +77,16 @@ public class LaunchEntryManager {
     }
 
     public static void saveEntriesToFile(List<LaunchEntry> entries) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_DIR + "/" + DATA_FILE))) {
+
+        String dataDir = System.getProperty("os.dataDir");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataDir + "/" + DATA_FILE))) {
             for (LaunchEntry entry : entries) {
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
                         entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
                 writer.newLine();
             }
-            System.out.println("Entries saved to " + USER_DATA_DIR + "/" + DATA_FILE);
+            System.out.println("Entries saved to " + dataDir + "/" + DATA_FILE);
         } catch (IOException e) {
             LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();

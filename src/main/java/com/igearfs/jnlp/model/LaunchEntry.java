@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025 In-Game Event, A Red Flag Syndicate LLC.
+ * All rights reserved.
+ *
+ */
+
 package com.igearfs.jnlp.model;
 
 import org.slf4j.Logger;
