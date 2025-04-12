@@ -6,10 +6,6 @@
 
 package com.igearfs.jnlp;
 
-import com.igearfs.jnlp.util.LogManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class Main {
     // Static block to set up logging and system properties before main() runs
     static {
