@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Manages the loading and saving of all LaunchEntries in the left list.
+ */
 public class LaunchEntryManager {
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntryManager.class);
     private static final String DATA_FILE = "jnlp_entries.txt";

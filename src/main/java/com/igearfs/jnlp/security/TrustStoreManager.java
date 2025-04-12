@@ -19,6 +19,9 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
+/**
+ * This is for HTTPS certificates. We Update the java default keystore with the certs so we can connect over https.
+ */
 public class TrustStoreManager {
     private static final Logger logger = LoggerFactory.getLogger(TrustStoreManager.class);
     // Dynamically get the JRE path using the system property

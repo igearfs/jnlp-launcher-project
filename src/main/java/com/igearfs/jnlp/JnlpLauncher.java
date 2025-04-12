@@ -27,6 +27,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * Downloads the njlp files and starts up the JNLP main file downloaded.
+ *
+ */
 public class JnlpLauncher {
     private static final Logger logger = LoggerFactory.getLogger(JnlpLauncher.class);
     private static final String CACHE_DIR = "jnlp_cache";  // Cache directory

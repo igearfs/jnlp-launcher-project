@@ -18,6 +18,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This loads the icons in the resource folder. If you add more icons you need to add the file name to the
+ * icons_list.txt file.
+ */
 public class IconLoader {
     private static final Logger logger = LoggerFactory.getLogger(IconLoader.class);
     /**

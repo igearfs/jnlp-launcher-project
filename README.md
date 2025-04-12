@@ -22,12 +22,6 @@ Before running this version, **make a backup** of your JNLP entries! The univers
 📌 This project is licensed under the **GNU GENERAL PUBLIC LICENSE Version 3**.
 
 ---
-
-⚠️ WARNING: As always, use at your own risk! ⚠️
-By downloading, installing, or running this program, you acknowledge that you are doing so at your own risk.
-The developer(S)/company is not responsible for any issues, data loss, or damage that may occur as a result of using this software.
-Please proceed with caution and make sure to back up your files!
-
 ## 📂 **Setup & Installation**
 
 ### **1️⃣ Build the Project**
@@ -65,8 +59,8 @@ Before using the app, generate the icon list:
 
 ## 🌟 **Features**
 
-✅ **Runs on JVM 17+ without WIX Installer or Bundled JRE** – Choose your runtime.
-✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** – Choose your runtime.  
+✅ **Runs on JVM 17+ without WIX Installer or Bundled JRE just compile with 17 and run the jar** 
+✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** (20+ is required for jpackage to package the files)
 ✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
 ✅ **🔎 Search Functionality** – Instantly find entries by name or URL.    
 ✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination.  
@@ -105,11 +99,23 @@ Before using the app, generate the icon list:
 
 ## ⚙ **Technical Details**
 
+- **DOWNLOADED JAR Storage**:
+    - JARS are saved in the **user's home directory**.
+    - Example locations:
+        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\jnlp_cache`
+        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/jnlp_cache`
+
 - **Data Storage**:
     - Entries are saved to `jnlp_entries.txt` in the **user's home directory**.
     - Example locations:
-        - **Windows**: `.\data\jnlp_entries.txt`
-        - **Mac/Linux**: `./data/jnlp_entries.txt`
+        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt`
+        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/data/jnlp_entries.txt`
+      
+- **LOGS Storage**:
+    - Entries are saved to `app-<date>.txt` in the **user's home directory**.
+    - Example locations:
+        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\logs\app-<date>.txt`
+        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/logs/app-<date>.txt`
 
 - **Icon Management**:
     - Icons are loaded from `resources/icons/` based on `icons_list.txt`.
@@ -134,3 +140,8 @@ Before using the app, generate the icon list:
 ---
 
 💡 **Enjoy the new features and let us know if you run into any issues!** 🚀
+
+⚠️ WARNING: As always, use at your own risk! ⚠️
+By downloading, installing, or running this program, you acknowledge that you are doing so at your own risk.
+The developer(S)/company is not responsible for any issues, data loss, or damage that may occur as a result of using this software.
+Please proceed with caution and make sure to back up your files!

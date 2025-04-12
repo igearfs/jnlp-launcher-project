@@ -8,8 +8,9 @@ package com.igearfs.jnlp.util;
 
 import org.slf4j.Logger;
 
-import java.net.MalformedURLException;
-
+/**
+ * Common Logging center. So if we need to add something to all logging it can be done here.
+ */
 public class LogManager {
 
     // Private constructor to prevent instantiation

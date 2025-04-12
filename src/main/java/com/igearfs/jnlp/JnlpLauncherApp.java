@@ -33,6 +33,9 @@ import java.util.UUID;
 
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
+/**
+ * Main FX Setup to launch the application.
+ */
 public class JnlpLauncherApp extends Application {
     private static final Logger logger = LoggerFactory.getLogger(JnlpLauncherApp.class);
     private List<LaunchEntry> entries = new ArrayList<>();

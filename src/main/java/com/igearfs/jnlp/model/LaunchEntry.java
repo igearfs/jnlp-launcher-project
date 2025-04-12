@@ -9,6 +9,10 @@ package com.igearfs.jnlp.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the Right Hand Pane data and data saved off to the file.
+ * Maybe in the future we use a database but for now a simple file will do.
+ */
 // Simple LaunchEntry class to hold name, URL, note, ID, ignoreDomainValidation, and iconPath
 public class LaunchEntry {
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntry.class);
