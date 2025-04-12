@@ -6,6 +6,11 @@
 
 package com.igearfs.jnlp;
 
+/**
+ *
+ * Class for setup and launching the JNLP Launcher.
+ *
+ */
 public class Main {
     // Static block to set up logging and system properties before main() runs
     static {

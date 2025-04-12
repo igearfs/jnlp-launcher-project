@@ -15,6 +15,9 @@ import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is the one that loads all those icons. Yep all 4,000+
+ */
 public class ColorGridCell extends StackPane {
     private static final Logger logger = LoggerFactory.getLogger(ColorGridCell.class);
     private ImageView iconImageView;

@@ -26,6 +26,9 @@ import java.net.URL;
 import java.util.List;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
+/**
+ * Runs the right hand pane saves/updates/data load/deletes you know CRUD Stuff.
+ */
 public class LaunchEntryController {
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntryController.class);
 

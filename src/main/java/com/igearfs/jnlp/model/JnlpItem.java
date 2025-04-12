@@ -6,11 +6,14 @@
 
 package com.igearfs.jnlp.model;
 
-import com.igearfs.jnlp.controller.LaunchEntryController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+
+/**
+ * This is for the item list for the left hand site.
+ */
 
 public class JnlpItem {
     private static final Logger logger = LoggerFactory.getLogger(JnlpItem.class);

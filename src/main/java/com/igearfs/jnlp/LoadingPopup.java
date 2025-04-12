@@ -14,6 +14,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * This will eventually pop up when loading so someone isn't wondering if the program is launching.
+ */
 public class LoadingPopup {
 
     private final Stage loadingStage;
