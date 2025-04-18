@@ -9,9 +9,10 @@ package com.igearfs.jnlp;
 import com.igearfs.jnlp.controller.LaunchEntryController;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
-import com.igearfs.jnlp.util.LaunchEntryManager;
 import com.igearfs.jnlp.util.IconLoader;
+import com.igearfs.jnlp.util.LaunchEntryManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -54,6 +55,7 @@ public class JnlpLauncherApp extends Application {
     private Stage primaryStage;
 
     private LaunchEntryController controller;  // Reference to the controller
+    private LoadingPopup lp = new LoadingPopup();
 
     @Override
     public void start(Stage primaryStage) {
@@ -110,7 +112,15 @@ public class JnlpLauncherApp extends Application {
         controller.populateListView();
 
         // Set button actions
-        launchButton.setOnAction(e -> controller.launchSelectedEntry());
+        launchButton.setOnAction(e -> {
+            lp.show();
+            // Ensure the code below runs after the popup is shown
+            Platform.runLater(() -> {
+                // Simulate a long-running task after the popup is visible
+                controller.launchSelectedEntry();
+            });
+
+        });
 
         deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
     }
@@ -452,4 +462,7 @@ public class JnlpLauncherApp extends Application {
 
     public Stage getPrimaryStage() { return this.primaryStage; }
 
+    public LoadingPopup getLoadingPopup() {
+        return this.lp;
+    }
 }

@@ -13,11 +13,13 @@ import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
 import com.igearfs.jnlp.util.LogManager;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javafx.stage.Stage;
@@ -43,7 +45,7 @@ public class LaunchEntryController {
     private final Button deleteButton;
     private final ListView<HBox> listViewJnlp;
     private final TextField searchField;
-    private LoadingPopup lp = new LoadingPopup();
+    private LoadingPopup lp;
     private Stage primaryStage;
 
     public LaunchEntryController(JnlpLauncherApp app) {
@@ -59,6 +61,7 @@ public class LaunchEntryController {
         this.listViewJnlp = app.getListViewJnlp();
         this.searchField = app.getSearchField();
         this.primaryStage = app.getPrimaryStage();
+        this.lp = app.getLoadingPopup();
     }
 
     public void saveSelectedEntry(ImageView iconImageView) {
@@ -180,7 +183,7 @@ public class LaunchEntryController {
 
 
     public void launchSelectedEntry() {
-        lp.show();
+
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {

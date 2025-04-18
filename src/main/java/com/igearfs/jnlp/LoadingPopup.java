@@ -24,15 +24,18 @@ public class LoadingPopup {
     private final Stage loadingStage;
 
     public LoadingPopup() {
+        // Create a ProgressIndicator (spinner)
         ProgressIndicator spinner = new ProgressIndicator();
+        spinner.setMaxSize(100, 100);  // Set the size of the spinner
+
         StackPane pane = new StackPane(spinner);
-        pane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-padding: 20;");
-        Scene scene = new Scene(pane, 100, 100);
+        pane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-padding: 20;");
+        Scene scene = new Scene(pane, 200, 200);  // Set window size
 
-        loadingStage = new Stage(StageStyle.UTILITY);
-        loadingStage.initModality(Modality.APPLICATION_MODAL);
-
-        loadingStage.setAlwaysOnTop(true);
+        // Initialize the stage (popup window)
+        loadingStage = new Stage();
+        loadingStage.initModality(Modality.APPLICATION_MODAL);  // Block interactions with the parent window
+        loadingStage.setAlwaysOnTop(true);  // Keep the loading popup on top of other windows
         loadingStage.setScene(scene);
     }
 

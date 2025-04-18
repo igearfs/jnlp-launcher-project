@@ -8,7 +8,6 @@ package com.igearfs.jnlp;
 
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.security.TrustStoreManager;
-import com.igearfs.jnlp.util.LaunchEntryManager;
 import com.igearfs.jnlp.util.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
