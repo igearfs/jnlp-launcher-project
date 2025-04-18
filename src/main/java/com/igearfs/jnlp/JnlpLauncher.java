@@ -291,7 +291,7 @@ public class JnlpLauncher {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.inheritIO(); // Redirects output to the console
         Process process = processBuilder.start();
-        lp.hide();
+
         // Capture output and errors
         new Thread(() -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
@@ -316,6 +316,7 @@ public class JnlpLauncher {
                 e.printStackTrace();
             }
         }).start();
+        lp.hide();
     }
 
 }
