@@ -118,6 +118,10 @@ public class JnlpLauncherApp extends Application {
 
         // Set button actions
         launchButton.setOnAction(e -> {
+            if (isModified) {
+                boolean confirmed = showConfirmationDialog("You have unsaved changes. Launch anyway?");
+                if (!confirmed) return;
+            }
             lp.show();
 
             PauseTransition pause = new PauseTransition(Duration.millis(1000));
@@ -129,10 +133,33 @@ public class JnlpLauncherApp extends Application {
             pause.play();
 
         });
-
+        primaryStage.setOnCloseRequest(event -> {
+            if (isModified) {
+                boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
+                if (!confirmed) {
+                    event.consume(); // Cancel close
+                }
+            }
+        });
         deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
+        setupChangeListeners();
         lp.hide();
     }
+
+    private boolean showConfirmationDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Action");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        ButtonType yes = new ButtonType("Yes");
+        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(yes, no);
+
+        return alert.showAndWait().filter(response -> response == yes).isPresent();
+    }
+
 
     private VBox createLeftPane() {
         VBox leftPane = new VBox(10);
@@ -229,6 +256,12 @@ public class JnlpLauncherApp extends Application {
         popupStage.showAndWait();
     }
 
+    private void setupChangeListeners() {
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
+        urlField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
+        noteField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
+        ignoreDomainCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> isModified = true);
+    }
 
 
     private int currentPage = 0; // Keep track of the current page
@@ -387,10 +420,17 @@ public class JnlpLauncherApp extends Application {
             // Button to select a new icon
             Button selectIconButton = new Button("Select Icon");
 
-            selectIconButton.setOnAction(e ->
-                    showIconChooserForNewEntry(iconImageView)
+            // Store initial icon URL before any changes
+            String initialIconPath = iconImageView.getImage() != null ? iconImageView.getImage().getUrl() : "";
 
-            );
+            selectIconButton.setOnAction(e -> {
+                showIconChooserForNewEntry(iconImageView);
+
+                // After selecting an icon, compare the icon path to the original one
+                if (!iconImageView.getImage().getUrl().equals(initialIconPath)) {
+                    isModified = true; // Mark as modified if the icon changes
+                }
+            });
 
             VBox rightPane = (VBox) ((SplitPane) primaryStage.getScene().getRoot()).getItems().get(1);
 
@@ -414,6 +454,7 @@ public class JnlpLauncherApp extends Application {
             saveButton.setOnAction(e ->
                 {
                     controller.saveSelectedEntry(iconImageView);
+                    isModified = false;
                     showSavedAlert();
                 });
             deleteButton.setDisable(false);
