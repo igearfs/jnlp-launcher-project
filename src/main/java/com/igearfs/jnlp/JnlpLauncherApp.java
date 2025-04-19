@@ -152,14 +152,30 @@ public class JnlpLauncherApp extends Application {
         alert.setHeaderText(null);
         alert.setContentText(message);
 
-        ButtonType yes = new ButtonType("Yes");
-        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
 
         alert.getButtonTypes().setAll(yes, no);
 
         return alert.showAndWait().filter(response -> response == yes).isPresent();
     }
 
+
+    private void showErrorAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occurred");
+        alert.setContentText(errorMessage);
+        alert.showAndWait();
+    }
+
+    private void showSavedAlert() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Saved");
+        alert.setHeaderText("Entry Updated");
+        alert.setContentText("Save complete");
+        alert.showAndWait();
+    }
 
     private VBox createLeftPane() {
         VBox leftPane = new VBox(10);
@@ -462,21 +478,7 @@ public class JnlpLauncherApp extends Application {
         }
     }
 
-    private void showErrorAlert(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("An error occurred");
-        alert.setContentText(errorMessage);
-        alert.showAndWait();
-    }
 
-    private void showSavedAlert() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Saved");
-        alert.setHeaderText("Entry Updated");
-        alert.setContentText("Save complete");
-        alert.showAndWait();
-    }
 
     public static void main(String[] args) {
         launch(args);
