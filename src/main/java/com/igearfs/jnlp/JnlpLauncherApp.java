@@ -11,6 +11,7 @@ import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.IconLoader;
 import com.igearfs.jnlp.util.LaunchEntryManager;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -24,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,11 +57,13 @@ public class JnlpLauncherApp extends Application {
     private Stage primaryStage;
 
     private LaunchEntryController controller;  // Reference to the controller
-    private LoadingPopup lp = new LoadingPopup();
+    private LoadingPopup lp;
 
     @Override
     public void start(Stage primaryStage) {
+        lp = new LoadingPopup();
         lp.show();
+
         this.primaryStage = primaryStage;
 
         primaryStage.setTitle("JNLP Launcher");
@@ -115,11 +119,14 @@ public class JnlpLauncherApp extends Application {
         // Set button actions
         launchButton.setOnAction(e -> {
             lp.show();
-            // Ensure the code below runs after the popup is shown
-            Platform.runLater(() -> {
-                // Simulate a long-running task after the popup is visible
+
+            PauseTransition pause = new PauseTransition(Duration.millis(1000));
+            pause.setOnFinished(ex -> {
+                // Your long running code here
                 controller.launchSelectedEntry();
+                lp.hide();
             });
+            pause.play();
 
         });
 
