@@ -411,7 +411,11 @@ public class JnlpLauncherApp extends Application {
             // Enable buttons and checkbox
             launchButton.setDisable(false);
             saveButton.setDisable(false);
-            saveButton.setOnAction(e -> controller.saveSelectedEntry(iconImageView));
+            saveButton.setOnAction(e ->
+                {
+                    controller.saveSelectedEntry(iconImageView);
+                    showSavedAlert();
+                });
             deleteButton.setDisable(false);
             ignoreDomainCheckBox.setDisable(false);
         }
@@ -422,6 +426,14 @@ public class JnlpLauncherApp extends Application {
         alert.setTitle("Error");
         alert.setHeaderText("An error occurred");
         alert.setContentText(errorMessage);
+        alert.showAndWait();
+    }
+
+    private void showSavedAlert() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Saved");
+        alert.setHeaderText("Entry Updated");
+        alert.setContentText("Save complete");
         alert.showAndWait();
     }
 
