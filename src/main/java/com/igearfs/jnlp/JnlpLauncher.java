@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class JnlpLauncher {
     private static final Logger logger = LoggerFactory.getLogger(JnlpLauncher.class);
-    private static final String CACHE_DIR = "jnlp_cache";  // Cache directory
+    private static final String CACHE_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/jnlp_cache";
     private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
 
     public static void main(String[] args) {
