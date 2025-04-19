@@ -6,7 +6,6 @@
 
 package com.igearfs.jnlp;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
@@ -14,48 +13,52 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
-/**
- * This will eventually pop up when loading so someone isn't wondering if the program is launching.
- */
 public class LoadingPopup {
 
     private final Stage loadingStage;
 
     public LoadingPopup() {
+        // Create the loading popup window (Stage)
+        loadingStage = new Stage(StageStyle.UTILITY);
+        loadingStage.setTitle("Please Wait...");
+        loadingStage.initModality(Modality.APPLICATION_MODAL); // Blocks the main window while the popup is visible
+        loadingStage.setResizable(false);
+
         // Create a ProgressIndicator (spinner)
-        ProgressIndicator spinner = new ProgressIndicator();
-        spinner.setMaxSize(100, 100);  // Set the size of the spinner
+        ProgressIndicator progressIndicator = new ProgressIndicator();
 
-        StackPane pane = new StackPane(spinner);
-        pane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-padding: 20;");
-        Scene scene = new Scene(pane, 200, 200);  // Set window size
+        // Set the size of the ProgressIndicator
+        progressIndicator.setPrefSize(100, 100);
 
-        // Initialize the stage (popup window)
-        loadingStage = new Stage();
-        loadingStage.initModality(Modality.APPLICATION_MODAL);  // Block interactions with the parent window
-        loadingStage.setAlwaysOnTop(true);  // Keep the loading popup on top of other windows
+        // Create a StackPane to hold the ProgressIndicator
+        StackPane root = new StackPane();
+        root.getChildren().add(progressIndicator);
+
+        // Create a Scene for the loading popup and add it to the Stage
+        Scene scene = new Scene(root, 200, 200);  // Window size is 200x200
+        scene.setFill(null); // Transparent background for the popup window
         loadingStage.setScene(scene);
+
+        // Hide the stage initially (spinner should be hidden on start)
+        loadingStage.hide();
     }
 
+    // Show the loading popup (the spinner will appear)
     public void show() {
         Platform.runLater(() -> {
             if (!loadingStage.isShowing()) {
-                System.out.println("Showing loading popup");
-                loadingStage.show();
-                // Add a delay after showing the popup (e.g., 3 seconds)
-                PauseTransition delay = new PauseTransition(Duration.seconds(3));  // Adjust seconds as needed
-                delay.play();  // Start the delay
+                loadingStage.show();  // Show the spinner
+                loadingStage.toFront();  // Bring the popup to the front if needed
             }
         });
     }
 
+    // Hide the loading popup (the spinner will disappear)
     public void hide() {
         Platform.runLater(() -> {
             if (loadingStage.isShowing()) {
-                System.out.println("Hide loading popup");
-                loadingStage.hide();
+                loadingStage.hide();  // Hide the spinner
             }
         });
     }

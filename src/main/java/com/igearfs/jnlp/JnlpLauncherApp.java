@@ -59,6 +59,7 @@ public class JnlpLauncherApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        lp.show();
         this.primaryStage = primaryStage;
 
         primaryStage.setTitle("JNLP Launcher");
@@ -123,6 +124,7 @@ public class JnlpLauncherApp extends Application {
         });
 
         deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
+        lp.hide();
     }
 
     private VBox createLeftPane() {
