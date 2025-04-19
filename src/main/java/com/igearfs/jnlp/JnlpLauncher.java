@@ -315,7 +315,7 @@ public class JnlpLauncher {
                 e.printStackTrace();
             }
         }).start();
-        lp.hide();
+
     }
 
 }
