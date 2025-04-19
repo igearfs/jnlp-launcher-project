@@ -14,6 +14,7 @@ import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
 import com.igearfs.jnlp.util.LogManager;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -199,13 +200,16 @@ public class LaunchEntryController {
         }
     }
 
-    public void showErrorAlert(String errorMessage) {
-        lp.hide();
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("An error occurred");
-        alert.setContentText(errorMessage);
-        alert.showAndWait();
+    public void showErrorAlert(final String errorMessage) {
+        Platform.runLater(() -> {
+            lp.hide();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("An error occurred");
+            alert.setContentText(errorMessage);
+            alert.showAndWait();
+
+        });
     }
 
     public void deleteSelectedEntry() {

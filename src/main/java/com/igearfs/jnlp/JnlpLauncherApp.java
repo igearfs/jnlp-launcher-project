@@ -51,7 +51,7 @@ public class JnlpLauncherApp extends Application {
     private Button deleteButton;
     private CheckBox ignoreDomainCheckBox;
 
-    private boolean isModified;
+    private boolean isModified = false;
 
     private TextField searchField;
     private Stage primaryStage;
@@ -161,20 +161,14 @@ public class JnlpLauncherApp extends Application {
     }
 
 
-    private void showErrorAlert(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("An error occurred");
-        alert.setContentText(errorMessage);
-        alert.showAndWait();
-    }
-
     private void showSavedAlert() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Saved");
-        alert.setHeaderText("Entry Updated");
-        alert.setContentText("Save complete");
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Saved");
+            alert.setHeaderText("Entry Updated");
+            alert.setContentText("Save complete");
+            alert.showAndWait();
+        });
     }
 
     private VBox createLeftPane() {
@@ -182,7 +176,20 @@ public class JnlpLauncherApp extends Application {
         leftPane.setPadding(new Insets(10));
 
         Button addButton = new Button("Add Entry");
-        addButton.setOnAction(e -> showAddEntryPopup());
+        addButton.setOnAction(e ->
+        {
+            if (isModified) {
+                boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
+                if (!confirmed) {
+                    e.consume(); // Cancel close
+                }
+                else
+                {
+                    isModified = false;
+                }
+            }
+            showAddEntryPopup();
+        });
 
         HBox searchBox = new HBox(5);
         searchField = new TextField();
@@ -200,7 +207,20 @@ public class JnlpLauncherApp extends Application {
         leftPane.getChildren().add(searchBox);
         leftPane.getChildren().add(addButton);
 
-        listViewJnlp.setOnMouseClicked(e -> updateRightPane());
+        listViewJnlp.setOnMouseClicked(e ->
+        {
+            if (isModified) {
+                boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
+                if (!confirmed) {
+                    e.consume(); // Cancel close
+                }
+                else
+                {
+                    isModified = false;
+                }
+            }
+            updateRightPane();
+        });
         leftPane.getChildren().add(listViewJnlp);
         return leftPane;
     }
@@ -263,6 +283,7 @@ public class JnlpLauncherApp extends Application {
             );
             entries.add(newEntry);
             saveEntriesToFile(entries);
+            isModified = false;
             controller.populateListView();
             popupStage.close();
         });
