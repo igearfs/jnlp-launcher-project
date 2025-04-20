@@ -29,11 +29,13 @@ import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.igearfs.jnlp.JnlpLauncher.clearCacheForEntry;
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
 /**
@@ -484,6 +486,19 @@ public class JnlpLauncherApp extends Application {
                 }
             });
 
+            // New "Clear Cache" Button
+            Button clearCacheButton = new Button("Clear Cache");
+            clearCacheButton.setOnAction(e -> {
+                try {
+                    clearCacheForEntry(selectedEntry);
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Success","Cache for entry '" + selectedEntry.getName() + "' cleared successfully.");
+                } catch (IOException ex) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Error","Failed to clear the cache. You will have to manually remove it.");
+
+                }
+                System.out.println("Cache cleared!");
+            });
+
             VBox rightPane = (VBox) ((SplitPane) primaryStage.getScene().getRoot()).getItems().get(1);
 
             // Clear and add all elements to the right pane
@@ -497,7 +512,7 @@ public class JnlpLauncherApp extends Application {
                     iconImageView,
                     selectIconButton,
                     ignoreDomainCheckBox,
-                    new HBox(10, saveButton, launchButton, deleteButton)
+                    new HBox(10,clearCacheButton, saveButton, launchButton, deleteButton)
             );
 
             // Enable buttons and checkbox
@@ -514,7 +529,19 @@ public class JnlpLauncherApp extends Application {
         }
     }
 
+    public static void showAlert(Alert.AlertType alertType, String title, String header, String content) {
+        // Using Platform.runLater to ensure the alert shows on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            // Create the alert
+            Alert alert = new Alert(alertType);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
 
+            // Show the alert and wait for the user to close it
+            alert.showAndWait();
+        });
+    }
 
     public static void main(String[] args) {
         launch(args);
