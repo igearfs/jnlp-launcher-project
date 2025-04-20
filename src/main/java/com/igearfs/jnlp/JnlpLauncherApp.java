@@ -52,6 +52,7 @@ public class JnlpLauncherApp extends Application {
     private CheckBox ignoreDomainCheckBox;
 
     private boolean isModified = false;
+    private boolean isLoading = false;
 
     private TextField searchField;
     private Stage primaryStage;
@@ -139,6 +140,10 @@ public class JnlpLauncherApp extends Application {
                 if (!confirmed) {
                     event.consume(); // Cancel close
                 }
+                else
+                {
+                    isModified = false;
+                }
             }
         });
         deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
@@ -209,6 +214,7 @@ public class JnlpLauncherApp extends Application {
 
         listViewJnlp.setOnMouseClicked(e ->
         {
+            isLoading = true;
             if (isModified) {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
                 if (!confirmed) {
@@ -220,6 +226,7 @@ public class JnlpLauncherApp extends Application {
                 }
             }
             updateRightPane();
+            isLoading = false;
         });
         leftPane.getChildren().add(listViewJnlp);
         return leftPane;
@@ -294,10 +301,18 @@ public class JnlpLauncherApp extends Application {
     }
 
     private void setupChangeListeners() {
-        nameField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
-        urlField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
-        noteField.textProperty().addListener((obs, oldVal, newVal) -> isModified = true);
-        ignoreDomainCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> isModified = true);
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isLoading) isModified = true;
+        });
+        urlField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isLoading) isModified = true;
+        });
+        noteField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isLoading) isModified = true;
+        });
+        ignoreDomainCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isLoading) isModified = true;
+        });
     }
 
 
