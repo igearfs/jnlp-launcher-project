@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -103,6 +104,43 @@ public class JnlpLauncher {
             return builder.parse(inputStream);
         }
     }
+
+    public static void clearCacheForEntry(LaunchEntry entry) throws IOException {
+        // Build the cache directory path for the specific entry
+        String domain = getDomainFromUrl(entry.getUrl());
+        Path cacheDir = Paths.get(CACHE_DIR, entry.getName() + "/" + domain);
+
+        // Check if the cache directory exists for this entry
+        if (Files.exists(cacheDir)) {
+            try {
+                // Walk through the directory and delete files and directories in reverse order
+                List<Path> paths = Files
+                        .walk(cacheDir)
+                        .sorted((path1, path2) -> path2.compareTo(path1))
+                        .collect(Collectors.toList());
+
+                for (Path path : paths) {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        // If deletion fails, log the error and continue
+                        System.err.println("Failed to delete file: " + path);
+                        throw e;  // Propagate the exception if needed
+                    }
+                }
+
+                System.out.println("Cache for entry '" + entry.getName() + "' cleared successfully.");
+            } catch (IOException e) {
+                // Log the error and rethrow the exception
+                System.err.println("Failed to clear cache for entry: " + entry.getName());
+                throw e;
+            }
+        } else {
+            System.out.println("No cache found for entry '" + entry.getName() + "'.");
+        }
+    }
+
+
 
     private static String extractMainClass(Document jnlpDoc) {
         NodeList mainClassNodes = jnlpDoc.getElementsByTagName("application-desc");
