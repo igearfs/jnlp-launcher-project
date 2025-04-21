@@ -349,6 +349,20 @@ public class JnlpLauncherApp extends Application
                 isModified = true;
             }
         });
+        usernameField.textProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
+        });
+        passwordField.textProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
+        });
     }
 
 
