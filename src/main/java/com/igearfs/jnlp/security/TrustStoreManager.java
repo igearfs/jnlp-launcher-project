@@ -6,13 +6,14 @@
 
 package com.igearfs.jnlp.security;
 
-import com.igearfs.jnlp.model.LaunchEntry; // Import LaunchEntry class
+import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.util.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
@@ -22,7 +23,8 @@ import java.security.cert.X509Certificate;
 /**
  * This is for HTTPS certificates. We Update the java default keystore with the certs so we can connect over https.
  */
-public class TrustStoreManager {
+public class TrustStoreManager
+{
     private static final Logger logger = LoggerFactory.getLogger(TrustStoreManager.class);
     // Dynamically get the JRE path using the system property
     private static final String LOCAL_JRE_PATH = System.getProperty("java.home");  // Dynamically set the local path to the system JRE
@@ -30,19 +32,26 @@ public class TrustStoreManager {
     private static final String TRUSTSTORE_PASSWORD = "changeit"; // Default password for the truststore
 
     // Method to download the server's SSL certificate without SSL validation
-    public static X509Certificate downloadCertificate(String jnlpUrl) throws Exception {
+    public static X509Certificate downloadCertificate(String jnlpUrl) throws Exception
+    {
         URL url = new URL(jnlpUrl);
         System.out.println("URL made");
 
         // Use a custom TrustManager that doesn't perform any certificate verification
-        TrustManager[] trustAllCertificates = new TrustManager[] {
-                new X509TrustManager() {
-                    public X509Certificate[] getAcceptedIssuers() {
+        TrustManager[] trustAllCertificates = new TrustManager[]{
+                new X509TrustManager()
+                {
+                    public X509Certificate[] getAcceptedIssuers()
+                    {
                         return null;  // Trust any certificate
                     }
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType)
+                    {
                     }
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType)
+                    {
                     }
                 }
         };
@@ -61,23 +70,29 @@ public class TrustStoreManager {
         System.out.println("Certificates received: " + certificates);
 
         // Get the first certificate in the chain (the server's certificate)
-        if (certificates.length > 0) {
+        if (certificates.length > 0)
+        {
             return (X509Certificate) certificates[0];
-        } else {
+        }
+        else
+        {
             throw new Exception("No certificates found in the server's response.");
         }
     }
 
     // Method to save the certificate to a file
-    public static void saveCertificateToFile(X509Certificate cert, String certFilePath) throws Exception {
-        try (FileOutputStream fos = new FileOutputStream(certFilePath)) {
+    public static void saveCertificateToFile(X509Certificate cert, String certFilePath) throws Exception
+    {
+        try (FileOutputStream fos = new FileOutputStream(certFilePath))
+        {
             fos.write(cert.getEncoded());
             System.out.println("Certificate saved to " + certFilePath);
         }
     }
 
     // Method to run keytool to add the certificate to the JRE truststore (cacerts)
-    public static void addCertificateToTruststoreWithKeyTool(String certFilePath) throws Exception {
+    public static void addCertificateToTruststoreWithKeyTool(String certFilePath) throws Exception
+    {
         // Run the keytool command to import the certificate
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "keytool",
@@ -96,9 +111,11 @@ public class TrustStoreManager {
     }
 
     // Method to set the default SSL context using the updated truststore
-    public static void setDefaultSSLContext() throws Exception {
+    public static void setDefaultSSLContext() throws Exception
+    {
         KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
-        try (FileInputStream truststoreInputStream = new FileInputStream(TRUSTSTORE_PATH)) {
+        try (FileInputStream truststoreInputStream = new FileInputStream(TRUSTSTORE_PATH))
+        {
             truststore.load(truststoreInputStream, TRUSTSTORE_PASSWORD.toCharArray());
         }
 
@@ -116,17 +133,24 @@ public class TrustStoreManager {
     public static void setCustomHostnameVerifier(LaunchEntry entry)
     {
         // Only disable domain validation if the user chose to ignore it
-        if (entry.isIgnoreDomainValidation()) {
+        if (entry.isIgnoreDomainValidation())
+        {
             System.out.println("Domain validation disabled for: " + entry.getUrl());
             // Disable domain validation by accepting any hostname
             HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-        } else {
+        }
+        else
+        {
             System.out.println("Domain validation enabled for: " + entry.getUrl());
             // Validate that the hostname matches the URL's host
-            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> {
-                try {
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) ->
+            {
+                try
+                {
                     return hostname.equals(new URL(entry.getUrl()).getHost());
-                } catch (MalformedURLException e) {
+                }
+                catch (MalformedURLException e)
+                {
                     LogManager.logError(logger, e.getMessage(), e);
                     throw new RuntimeException("Invalid URL format: " + entry.getUrl(), e);
                 }
@@ -135,8 +159,10 @@ public class TrustStoreManager {
     }
 
     // Method to trust a URL (downloads the certificate, adds it to the default truststore)
-    public static void trustUrl(LaunchEntry entry) {
-        try {
+    public static void trustUrl(LaunchEntry entry)
+    {
+        try
+        {
             // Step 1: Set hostname verification based on the LaunchEntry ignoreDomainValidation field
             setCustomHostnameVerifier(entry);
 
@@ -161,11 +187,15 @@ public class TrustStoreManager {
             connection.connect();  // Attempt to connect again using the updated truststore
             System.out.println("Successfully connected to the server: " + entry.getUrl());
 
-        } catch (SSLHandshakeException e) {
+        }
+        catch (SSLHandshakeException e)
+        {
             LogManager.logError(logger, e.getMessage(), e);
             System.err.println("SSL Handshake Exception encountered.");
             e.printStackTrace();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
             System.err.println("Failed to trust URL: " + entry.getUrl());
@@ -173,14 +203,16 @@ public class TrustStoreManager {
     }
 
     // Example usage
-    public static void main(String[] args) {
-        if (args.length != 1) {
+    public static void main(String[] args)
+    {
+        if (args.length != 1)
+        {
             System.err.println("Usage: java TrustStoreManager <jnlp-url>");
             System.exit(1);
         }
 
         // Create LaunchEntry and pass it to the trustUrl method
-        LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket"); // Example entry
+        LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket", null, null); // Example entry
         trustUrl(entry);
     }
 }

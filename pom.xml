@@ -24,6 +24,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.microsoft</groupId>
+            <artifactId>credential-secure-storage</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>

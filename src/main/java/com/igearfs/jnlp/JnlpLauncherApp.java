@@ -8,12 +8,13 @@ package com.igearfs.jnlp;
 
 import com.igearfs.jnlp.controller.LaunchEntryController;
 import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.IconLoader;
 import com.igearfs.jnlp.util.LaunchEntryManager;
+import com.microsoft.credentialstorage.model.StoredCredential;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -41,29 +42,38 @@ import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 /**
  * Main FX Setup to launch the application.
  */
-public class JnlpLauncherApp extends Application {
+public class JnlpLauncherApp extends Application
+{
     private static final Logger logger = LoggerFactory.getLogger(JnlpLauncherApp.class);
     private List<LaunchEntry> entries = new ArrayList<>();
     private ListView<HBox> listViewJnlp;
-    private TextField nameField;
-    private TextField urlField;
+    private TextField nameField, urlField, searchField, usernameField;
     private TextArea noteField;
-    private Button launchButton;
-    private Button saveButton;
-    private Button deleteButton;
+    private PasswordField passwordField;
+
+    private Button launchButton, saveButton, deleteButton;
+
     private CheckBox ignoreDomainCheckBox;
 
     private boolean isModified = false;
     private boolean isLoading = false;
 
-    private TextField searchField;
     private Stage primaryStage;
-
+    private String masterPassword = null; // Holds the master password in memory
     private LaunchEntryController controller;  // Reference to the controller
     private LoadingPopup lp;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage)
+    {
+
+        initializeUI(primaryStage);
+
+    }
+
+    private void initializeUI(Stage primaryStage)
+    {
+        isLoading = true;
         lp = new LoadingPopup();
         lp.show();
 
@@ -79,6 +89,9 @@ public class JnlpLauncherApp extends Application {
         VBox rightPane = new VBox(10);
         rightPane.setPadding(new Insets(10));
 
+        // Adding the new fields for username and password
+        usernameField = new TextField(); // Username field
+        passwordField = new PasswordField(); // Password field (masked)
         nameField = new TextField();
         urlField = new TextField();
         noteField = new TextArea();
@@ -100,6 +113,8 @@ public class JnlpLauncherApp extends Application {
                 new Label("Name:"), nameField,
                 new Label("URL:"), urlField,
                 new Label("Notes:"), noteField,
+                new Label("Username:"), usernameField,  // Username label and field
+                new Label("Password:"), passwordField,  // Password label and field
                 ignoreDomainCheckBox,
                 buttonContainer
         );
@@ -118,17 +133,23 @@ public class JnlpLauncherApp extends Application {
         // Load entries and populate ListView
         LaunchEntryManager.loadEntriesFromFile(entries);
         controller.populateListView();
-
+        isModified = false;
         // Set button actions
-        launchButton.setOnAction(e -> {
-            if (isModified) {
+        launchButton.setOnAction(e ->
+        {
+            if (isModified)
+            {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Launch anyway?");
-                if (!confirmed) return;
+                if (!confirmed)
+                {
+                    return;
+                }
             }
             lp.show();
 
             PauseTransition pause = new PauseTransition(Duration.millis(1000));
-            pause.setOnFinished(ex -> {
+            pause.setOnFinished(ex ->
+            {
                 // Your long running code here
                 controller.launchSelectedEntry();
                 lp.hide();
@@ -136,10 +157,13 @@ public class JnlpLauncherApp extends Application {
             pause.play();
 
         });
-        primaryStage.setOnCloseRequest(event -> {
-            if (isModified) {
+        primaryStage.setOnCloseRequest(event ->
+        {
+            if (isModified)
+            {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
-                if (!confirmed) {
+                if (!confirmed)
+                {
                     event.consume(); // Cancel close
                 }
                 else
@@ -148,46 +172,29 @@ public class JnlpLauncherApp extends Application {
                 }
             }
         });
-        deleteButton.setOnAction(e -> controller.deleteSelectedEntry());
+        deleteButton.setOnAction(e ->
+        {
+
+            controller.deleteSelectedEntry();
+        });
         setupChangeListeners();
         lp.hide();
+        isLoading = false;
     }
 
-    private boolean showConfirmationDialog(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm Action");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
-
-        alert.getButtonTypes().setAll(yes, no);
-
-        return alert.showAndWait().filter(response -> response == yes).isPresent();
-    }
-
-
-    private void showSavedAlert() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Saved");
-            alert.setHeaderText("Entry Updated");
-            alert.setContentText("Save complete");
-            alert.showAndWait();
-        });
-    }
-
-    private VBox createLeftPane() {
+    private VBox createLeftPane()
+    {
         VBox leftPane = new VBox(10);
         leftPane.setPadding(new Insets(10));
 
         Button addButton = new Button("Add Entry");
         addButton.setOnAction(e ->
         {
-            if (isModified) {
+            if (isModified)
+            {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
-                if (!confirmed) {
+                if (!confirmed)
+                {
                     e.consume(); // Cancel close
                 }
                 else
@@ -217,9 +224,11 @@ public class JnlpLauncherApp extends Application {
         listViewJnlp.setOnMouseClicked(e ->
         {
             isLoading = true;
-            if (isModified) {
+            if (isModified)
+            {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
-                if (!confirmed) {
+                if (!confirmed)
+                {
                     e.consume(); // Cancel close
                 }
                 else
@@ -234,7 +243,8 @@ public class JnlpLauncherApp extends Application {
         return leftPane;
     }
 
-    private void showAddEntryPopup() {
+    private void showAddEntryPopup()
+    {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Add New Entry");
@@ -246,6 +256,8 @@ public class JnlpLauncherApp extends Application {
         TextField newNameField = new TextField();
         TextField newUrlField = new TextField();
         TextArea newNoteField = new TextArea();
+        TextField newUserName = new TextField();
+        PasswordField newPasswordField = new PasswordField();
 
         // Initial image for icon preview (empty initially)
         ImageView iconImageView = new ImageView();
@@ -270,17 +282,20 @@ public class JnlpLauncherApp extends Application {
                 new Label("URL:"), newUrlField,
                 new Label("Notes:"), newNoteField,
                 new Label("Icon:"),
+                new Label("Username:"), newUserName,
+                new Label("Password:"), newPasswordField,
                 iconImageView,
                 selectIconButton,
                 newIgnoreDomainCheckBox,
                 buttonBox
         );
 
-        Scene popupScene = new Scene(popupLayout, 350, 450);
+        Scene popupScene = new Scene(popupLayout, 400, 500);
         popupStage.setScene(popupScene);
 
-        okButton.setOnAction(e -> {
-            System.out.println("ICON SAVING FROM POPUP::"+ iconImageView.getImage().getUrl());
+        okButton.setOnAction(e ->
+        {
+            System.out.println("ICON SAVING FROM POPUP::" + iconImageView.getImage().getUrl());
             // Create a new LaunchEntry with the selected icon path
             LaunchEntry newEntry = new LaunchEntry(
                     newNameField.getText(),
@@ -288,7 +303,9 @@ public class JnlpLauncherApp extends Application {
                     newNoteField.getText(),
                     UUID.randomUUID().toString(),
                     newIgnoreDomainCheckBox.isSelected(),
-                    ColorGridCell.lastSelectedCell.getIconName() // Store the icon URL in the entry
+                    ColorGridCell.lastSelectedCell.getIconName(),
+                    newUserName.getText(),
+                    newPasswordField.getText()
             );
             entries.add(newEntry);
             saveEntriesToFile(entries);
@@ -302,18 +319,35 @@ public class JnlpLauncherApp extends Application {
         popupStage.showAndWait();
     }
 
-    private void setupChangeListeners() {
-        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!isLoading) isModified = true;
+    private void setupChangeListeners()
+    {
+        nameField.textProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
         });
-        urlField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!isLoading) isModified = true;
+        urlField.textProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
         });
-        noteField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!isLoading) isModified = true;
+        noteField.textProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
         });
-        ignoreDomainCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!isLoading) isModified = true;
+        ignoreDomainCheckBox.selectedProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (!isLoading)
+            {
+                isModified = true;
+            }
         });
     }
 
@@ -322,7 +356,8 @@ public class JnlpLauncherApp extends Application {
     private int iconsPerPage = 100; // Number of icons to show per page (adjust this as necessary)
     private List<String> iconNames = IconLoader.loadIconNames("/icons_list.txt"); // Load icon names from the config file
 
-    private void showIconChooserForNewEntry(ImageView iconImageView) {
+    private void showIconChooserForNewEntry(ImageView iconImageView)
+    {
         // Create a new Stage (window) for the icon selection
         Stage iconSelectionStage = new Stage();
         iconSelectionStage.initModality(Modality.APPLICATION_MODAL);
@@ -343,11 +378,13 @@ public class JnlpLauncherApp extends Application {
         Button cancelButton = new Button("Cancel");
 
         // Done button action
-        doneButton.setOnAction(e -> {
+        doneButton.setOnAction(e ->
+        {
             // Get the currently selected image from the ColorGridCell
             Image selectedImage = ColorGridCell.getSelectedImage();
 
-            if (selectedImage != null) {
+            if (selectedImage != null)
+            {
                 // Update the ImageView with the selected icon in the main screen
                 iconImageView.setImage(selectedImage);
 
@@ -385,7 +422,8 @@ public class JnlpLauncherApp extends Application {
     }
 
 
-    private void loadIconsForPage(GridPane iconGrid) {
+    private void loadIconsForPage(GridPane iconGrid)
+    {
         iconGrid.getChildren().clear();  // Clear the previous icons
         int row = 0, col = 0;
 
@@ -393,7 +431,8 @@ public class JnlpLauncherApp extends Application {
         int startIndex = currentPage * iconsPerPage;
         int endIndex = Math.min(startIndex + iconsPerPage, iconNames.size());
 
-        for (int i = startIndex; i < endIndex; i++) {
+        for (int i = startIndex; i < endIndex; i++)
+        {
             String iconName = iconNames.get(i);
 
             // Load the icon image from resources
@@ -407,7 +446,8 @@ public class JnlpLauncherApp extends Application {
             col++;
 
             // Move to the next row after 10 icons in the current row
-            if (col == 10) {
+            if (col == 10)
+            {
                 col = 0;
                 row++;
             }
@@ -419,23 +459,28 @@ public class JnlpLauncherApp extends Application {
 
 
     // Pagination Logic: Show next page
-    private void loadNextPage(GridPane iconGrid) {
+    private void loadNextPage(GridPane iconGrid)
+    {
         currentPage++;
         loadIconsForPage(iconGrid);  // Reload with next page's icons
     }
 
     // Pagination Logic: Show previous page
-    private void loadPreviousPage(GridPane iconGrid) {
-        if (currentPage > 0) {
+    private void loadPreviousPage(GridPane iconGrid)
+    {
+        if (currentPage > 0)
+        {
             currentPage--;
             loadIconsForPage(iconGrid);  // Reload with previous page's icons
         }
     }
 
-    private void updateRightPane() {
+    private void updateRightPane()
+    {
         ColorGridCell.lastSelectedCell = null;
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
+        if (selectedItem != null)
+        {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
@@ -444,18 +489,23 @@ public class JnlpLauncherApp extends Application {
             System.out.println("Loading ICON:::" + iconName);
             // Get the actual image for the icon using IconLoader (or resource path)
             ImageView iconImageView = new ImageView();
-            if (iconName != null && !iconName.isEmpty()) {
+            if (iconName != null && !iconName.isEmpty())
+            {
                 // Load the icon using IconLoader
                 iconImageView.setImage(IconLoader.loadIcon(iconName).getImage());
             }
 
             // If no valid icon is found, use a default icon (or empty placeholder)
-            if (iconImageView.getImage() == null) {
+            if (iconImageView.getImage() == null)
+            {
                 // Attempt to load the default icon
                 InputStream iconStream = getClass().getResourceAsStream("/icons/rocket.png");
-                if (iconStream != null) {
+                if (iconStream != null)
+                {
                     iconImageView.setImage(new Image(iconStream));
-                } else {
+                }
+                else
+                {
                     // If the default icon is not found, use a placeholder or null image
                     iconImageView.setImage(new Image("")); // Or use a local fallback image
                 }
@@ -471,29 +521,47 @@ public class JnlpLauncherApp extends Application {
             noteField.setText(selectedEntry.getNote());
             ignoreDomainCheckBox.setSelected(selectedEntry.isIgnoreDomainValidation());
 
+            StoredCredential creds = CredentialManager.getCredential(selectedEntry.getId());
+            if (creds != null)
+            {
+                usernameField.setText(creds.getUsername());
+                passwordField.setText(new String(creds.getPassword()));
+            }
+            else
+            {
+                usernameField.setText("");
+                passwordField.setText("");
+            }
+
             // Button to select a new icon
             Button selectIconButton = new Button("Select Icon");
 
             // Store initial icon URL before any changes
             String initialIconPath = iconImageView.getImage() != null ? iconImageView.getImage().getUrl() : "";
 
-            selectIconButton.setOnAction(e -> {
+            selectIconButton.setOnAction(e ->
+            {
                 showIconChooserForNewEntry(iconImageView);
 
                 // After selecting an icon, compare the icon path to the original one
-                if (!iconImageView.getImage().getUrl().equals(initialIconPath)) {
+                if (!iconImageView.getImage().getUrl().equals(initialIconPath))
+                {
                     isModified = true; // Mark as modified if the icon changes
                 }
             });
 
             // New "Clear Cache" Button
             Button clearCacheButton = new Button("Clear Cache");
-            clearCacheButton.setOnAction(e -> {
-                try {
+            clearCacheButton.setOnAction(e ->
+            {
+                try
+                {
                     clearCacheForEntry(selectedEntry);
-                    showAlert(Alert.AlertType.INFORMATION, "Success", "Success","Cache for entry '" + selectedEntry.getName() + "' cleared successfully.");
-                } catch (IOException ex) {
-                    showAlert(Alert.AlertType.ERROR, "Error", "Error","Failed to clear the cache. You will have to manually remove it.");
+                    AlertHelper.showAlert(Alert.AlertType.INFORMATION, "Success", "Success", "Cache for entry '" + selectedEntry.getName() + "' cleared successfully.");
+                }
+                catch (IOException ex)
+                {
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Error", "Failed to clear the cache. You will have to manually remove it.");
 
                 }
                 System.out.println("Cache cleared!");
@@ -509,87 +577,116 @@ public class JnlpLauncherApp extends Application {
                     new Label("URL:"), urlField,
                     new Label("Notes:"), noteField,
                     new Label("Current Icon:"),
+                    new Label("Username:"), usernameField,
+                    new Label("Password:"), passwordField,
                     iconImageView,
                     selectIconButton,
                     ignoreDomainCheckBox,
-                    new HBox(10,clearCacheButton, saveButton, launchButton, deleteButton)
+                    new HBox(10, clearCacheButton, saveButton, launchButton, deleteButton)
             );
 
             // Enable buttons and checkbox
             launchButton.setDisable(false);
             saveButton.setDisable(false);
             saveButton.setOnAction(e ->
-                {
-                    controller.saveSelectedEntry(iconImageView);
-                    isModified = false;
-                    showSavedAlert();
-                });
+            {
+                controller.saveSelectedEntry(iconImageView);
+                isModified = false;
+                AlertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Saved", "Entry Updated", "Save complete");
+            });
             deleteButton.setDisable(false);
             ignoreDomainCheckBox.setDisable(false);
         }
     }
 
-    public static void showAlert(Alert.AlertType alertType, String title, String header, String content) {
-        // Using Platform.runLater to ensure the alert shows on the JavaFX Application Thread
-        Platform.runLater(() -> {
-            // Create the alert
-            Alert alert = new Alert(alertType);
-            alert.setTitle(title);
-            alert.setHeaderText(header);
-            alert.setContentText(content);
+    private boolean showConfirmationDialog(String message)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Action");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
 
-            // Show the alert and wait for the user to close it
-            alert.showAndWait();
-        });
+        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+
+        alert.getButtonTypes().setAll(yes, no);
+
+        return alert.showAndWait().filter(response -> response == yes).isPresent();
     }
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args)
+    {
         launch(args);
     }
 
-    public List<LaunchEntry> getEntries() {
+    public List<LaunchEntry> getEntries()
+    {
         return this.entries;
     }
 
-    public Button getSaveButton() {
+    public Button getSaveButton()
+    {
         return this.saveButton;
     }
 
-    public Button getLaunchButton() {
+    public Button getLaunchButton()
+    {
         return this.launchButton;
     }
 
-    public TextField getNameField() {
+    public TextField getNameField()
+    {
         return this.nameField;
     }
 
-    public TextField getUrlField() {
+    public TextField getUrlField()
+    {
         return this.urlField;
     }
 
-    public TextArea getNoteField() {
+    public TextArea getNoteField()
+    {
         return this.noteField;
     }
 
-    public Button getDeleteButton() {
+    public Button getDeleteButton()
+    {
         return this.deleteButton;
     }
 
-    public CheckBox getIgnoreDomainCheckBox() {
+    public CheckBox getIgnoreDomainCheckBox()
+    {
         return this.ignoreDomainCheckBox;
     }
 
-    public ListView<HBox> getListViewJnlp() {
+    public ListView<HBox> getListViewJnlp()
+    {
         return this.listViewJnlp;
     }
 
-    public TextField getSearchField() {
+    public TextField getSearchField()
+    {
         return this.searchField;
     }
 
-    public Stage getPrimaryStage() { return this.primaryStage; }
+    public TextField getUserNameField()
+    {
+        return this.usernameField;
+    }
 
-    public LoadingPopup getLoadingPopup() {
+    public PasswordField getPasswordField()
+    {
+        return this.passwordField;
+    }
+
+    public Stage getPrimaryStage()
+    {
+        return this.primaryStage;
+    }
+
+    public LoadingPopup getLoadingPopup()
+    {
         return this.lp;
     }
 }

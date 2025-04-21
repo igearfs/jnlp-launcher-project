@@ -6,7 +6,6 @@
 
 package com.igearfs.jnlp.util;
 
-import com.igearfs.jnlp.security.TrustStoreManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -18,7 +17,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the one that loads all those icons. Yep all 4,000+
  */
-public class ColorGridCell extends StackPane {
+public class ColorGridCell extends StackPane
+{
     private static final Logger logger = LoggerFactory.getLogger(ColorGridCell.class);
     private ImageView iconImageView;
     private Rectangle backgroundRectangle;
@@ -28,7 +28,8 @@ public class ColorGridCell extends StackPane {
     // Static variable to track the currently selected cell
     public static ColorGridCell lastSelectedCell = null;
 
-    public ColorGridCell(String iconName, Image iconImage) {
+    public ColorGridCell(String iconName, Image iconImage)
+    {
         this.iconName = iconName;
 
         // Create the background for the cell
@@ -45,9 +46,11 @@ public class ColorGridCell extends StackPane {
         getChildren().addAll(backgroundRectangle, iconImageView);
 
         // Add mouse click handler to toggle selection
-        setOnMouseClicked(event -> {
+        setOnMouseClicked(event ->
+        {
             // If another cell was selected, deselect it
-            if (lastSelectedCell != null) {
+            if (lastSelectedCell != null)
+            {
                 lastSelectedCell.deselect();
             }
 
@@ -57,50 +60,62 @@ public class ColorGridCell extends StackPane {
     }
 
     // Select this cell
-    private void select() {
+    private void select()
+    {
         isSelected = true;
         updateCellStyle();
         lastSelectedCell = this; // Update the static reference to the currently selected cell
     }
 
     // Deselect this cell
-    private void deselect() {
+    private void deselect()
+    {
         isSelected = false;
         updateCellStyle();
     }
 
     // Update the style of the cell based on whether it's selected
-    private void updateCellStyle() {
-        if (isSelected) {
+    private void updateCellStyle()
+    {
+        if (isSelected)
+        {
             backgroundRectangle.setFill(Color.LIGHTBLUE);  // Selected cell color
-        } else {
+        }
+        else
+        {
             backgroundRectangle.setFill(Color.WHITE);  // Default background color
         }
     }
 
     // Getters and setters for the icon name and image
-    public String getIconName() {
+    public String getIconName()
+    {
         return iconName;
     }
 
-    public ImageView getIconImageView() {
+    public ImageView getIconImageView()
+    {
         return iconImageView;
     }
 
-    public boolean isSelected() {
+    public boolean isSelected()
+    {
         return isSelected;
     }
 
     // Method to reset selection
-    public static void resetSelection() {
-        if (lastSelectedCell != null) {
+    public static void resetSelection()
+    {
+        if (lastSelectedCell != null)
+        {
             lastSelectedCell.deselect();
             lastSelectedCell = null;
         }
     }
 
     // Get the selected image
-    public static Image getSelectedImage() {
+    public static Image getSelectedImage()
+    {
         return lastSelectedCell != null ? lastSelectedCell.iconImageView.getImage() : null;
     }
 }

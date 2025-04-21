@@ -15,49 +15,59 @@ import java.util.Objects;
  * This is for the item list for the left hand site.
  */
 
-public class JnlpItem {
+public class JnlpItem
+{
     private static final Logger logger = LoggerFactory.getLogger(JnlpItem.class);
     private String name;
     private String url;
     private String iconPath;
 
     // Default constructor
-    public JnlpItem() {
+    public JnlpItem()
+    {
     }
 
     // Parameterized constructor
-    public JnlpItem(String name, String url, String iconPath) {
+    public JnlpItem(String name, String url, String iconPath)
+    {
         this.name = name;
         this.url = url;
         this.iconPath = iconPath;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getUrl() {
+    public String getUrl()
+    {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(String url)
+    {
         this.url = url;
     }
 
-    public String getIconPath() {
+    public String getIconPath()
+    {
         return iconPath;
     }
 
-    public void setIconPath(String iconPath) {
+    public void setIconPath(String iconPath)
+    {
         this.iconPath = iconPath;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "JnlpItem{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
@@ -66,14 +76,22 @@ public class JnlpItem {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(name, url, iconPath);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass())
+        {
+            return false;
+        }
         JnlpItem jnlpItem = (JnlpItem) obj;
         return Objects.equals(name, jnlpItem.name) &&
                 Objects.equals(url, jnlpItem.url) &&

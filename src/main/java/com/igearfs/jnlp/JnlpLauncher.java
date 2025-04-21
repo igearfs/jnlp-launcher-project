@@ -7,8 +7,10 @@
 package com.igearfs.jnlp;
 
 import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.security.TrustStoreManager;
 import com.igearfs.jnlp.util.LogManager;
+import com.microsoft.credentialstorage.model.StoredCredential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -28,33 +30,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * Downloads the njlp files and starts up the JNLP main file downloaded.
- *
  */
-public class JnlpLauncher {
+public class JnlpLauncher
+{
     private static final Logger logger = LoggerFactory.getLogger(JnlpLauncher.class);
     private static final String CACHE_DIR = System.getProperty("user.home") + "/AppData/Roaming/SyncSyndicate/jnlp_cache";
     private static final String JRE_PATH = System.getProperty("java.home") + "/bin/java"; // Dynamically set JRE path
 
-    public static void main(String[] args) {
-        if (args.length != 1) {
+    public static void main(String[] args)
+    {
+        if (args.length != 1)
+        {
             System.err.println("Usage: java -jar jnlp-launcher.jar <jnlp-url>");
             System.exit(1);
         }
 
         String jnlpUrl = args[0];
 
-        try {
+        try
+        {
 
             // Trust the server certificate by using the default JRE truststore
             // Create LaunchEntry and pass it to the trustUrl method
-            LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket"); // Example entry
+            LaunchEntry entry = new LaunchEntry("My Application", args[0], "Description", "1", true, "/rocket", "admin", "admin"); // Example entry
 
             // Now SSL verification will trust the JNLP URL server's certificate
             loadJnlpAndLaunch(entry, new LoadingPopup());
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
@@ -62,12 +68,16 @@ public class JnlpLauncher {
         }
     }
 
-    public static void loadJnlpAndLaunch(LaunchEntry entry, LoadingPopup lp) throws Exception {
-        try {
+    public static void loadJnlpAndLaunch(LaunchEntry entry, LoadingPopup lp) throws Exception
+    {
+        try
+        {
             // Trust the server certificate by using the default JRE truststore
             TrustStoreManager.trustUrl(entry);  // Automatically uses the default truststore from JRE
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
@@ -78,51 +88,62 @@ public class JnlpLauncher {
         List<String> jarUrls = extractJarUrls(jnlpUrl, jnlpDoc);
         List<String> appArgs = extractAppArgs(jnlpDoc);
 
-        if (mainClass == null || mainClass.isEmpty()) {
+        if (mainClass == null || mainClass.isEmpty())
+        {
             throw new RuntimeException("Main class not found in JNLP");
         }
 
         List<Path> downloadedJars = new ArrayList<>();
-        for (String jarUrl : jarUrls) {
+        for (String jarUrl : jarUrls)
+        {
             Path jarPath = downloadJar(jarUrl, jnlpUrl, entry.getName()); // Pass jnlpUrl for domain-based cache
             downloadedJars.add(jarPath);
         }
 
         String classpath = buildClasspath(downloadedJars);
-        launchApp(mainClass, classpath, appArgs, lp);
+        launchApp(mainClass, classpath, appArgs, lp, entry);
     }
 
-    private static Document loadJnlp(String jnlpUrl) throws Exception {
+    private static Document loadJnlp(String jnlpUrl) throws Exception
+    {
         System.out.println("Loading JNLP from: " + jnlpUrl);
         URL url = new URL(jnlpUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
-        try (InputStream inputStream = connection.getInputStream()) {
+        try (InputStream inputStream = connection.getInputStream())
+        {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             return builder.parse(inputStream);
         }
     }
 
-    public static void clearCacheForEntry(LaunchEntry entry) throws IOException {
+    public static void clearCacheForEntry(LaunchEntry entry) throws IOException
+    {
         // Build the cache directory path for the specific entry
         String domain = getDomainFromUrl(entry.getUrl());
         Path cacheDir = Paths.get(CACHE_DIR, entry.getName() + "/" + domain);
 
         // Check if the cache directory exists for this entry
-        if (Files.exists(cacheDir)) {
-            try {
+        if (Files.exists(cacheDir))
+        {
+            try
+            {
                 // Walk through the directory and delete files and directories in reverse order
                 List<Path> paths = Files
                         .walk(cacheDir)
                         .sorted((path1, path2) -> path2.compareTo(path1))
                         .collect(Collectors.toList());
 
-                for (Path path : paths) {
-                    try {
+                for (Path path : paths)
+                {
+                    try
+                    {
                         Files.delete(path);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         // If deletion fails, log the error and continue
                         System.err.println("Failed to delete file: " + path);
                         throw e;  // Propagate the exception if needed
@@ -130,34 +151,42 @@ public class JnlpLauncher {
                 }
 
                 System.out.println("Cache for entry '" + entry.getName() + "' cleared successfully.");
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 // Log the error and rethrow the exception
                 System.err.println("Failed to clear cache for entry: " + entry.getName());
                 throw e;
             }
-        } else {
+        }
+        else
+        {
             System.out.println("No cache found for entry '" + entry.getName() + "'.");
         }
     }
 
 
-
-    private static String extractMainClass(Document jnlpDoc) {
+    private static String extractMainClass(Document jnlpDoc)
+    {
         NodeList mainClassNodes = jnlpDoc.getElementsByTagName("application-desc");
-        if (mainClassNodes.getLength() > 0) {
+        if (mainClassNodes.getLength() > 0)
+        {
             Element mainClassElement = (Element) mainClassNodes.item(0);
             return mainClassElement.getAttribute("main-class");
         }
         return null;
     }
 
-    private static List<String> extractJarUrls(String jnlpUrl, Document jnlpDoc) {
+    private static List<String> extractJarUrls(String jnlpUrl, Document jnlpDoc)
+    {
         List<String> jarUrls = new ArrayList<>();
         NodeList jarNodes = jnlpDoc.getElementsByTagName("jar");
-        for (int i = 0; i < jarNodes.getLength(); i++) {
+        for (int i = 0; i < jarNodes.getLength(); i++)
+        {
             Element jarElement = (Element) jarNodes.item(i);
             String jarUrl = jarElement.getAttribute("href");
-            if (!jarUrl.startsWith("http")) {
+            if (!jarUrl.startsWith("http"))
+            {
                 jarUrl = jnlpUrl.substring(0, jnlpUrl.lastIndexOf("/") + 1) + jarUrl;
             }
             jarUrls.add(jarUrl);
@@ -165,20 +194,24 @@ public class JnlpLauncher {
         return jarUrls;
     }
 
-    private static List<String> extractAppArgs(Document jnlpDoc) {
+    private static List<String> extractAppArgs(Document jnlpDoc)
+    {
         List<String> appArgs = new ArrayList<>();
         NodeList argNodes = jnlpDoc.getElementsByTagName("argument");
-        for (int i = 0; i < argNodes.getLength(); i++) {
+        for (int i = 0; i < argNodes.getLength(); i++)
+        {
             appArgs.add(argNodes.item(i).getTextContent());
         }
         return appArgs;
     }
 
-    private static Path downloadJar(String jarUrl, String jnlpUrl, String nameFromEntry) throws IOException {
+    private static Path downloadJar(String jarUrl, String jnlpUrl, String nameFromEntry) throws IOException
+    {
         // Generate a cache folder based on the domain
         String domain = getDomainFromUrl(jnlpUrl);
         Path domainCacheDir = Paths.get(CACHE_DIR, nameFromEntry + "/" + domain);
-        if (!Files.exists(domainCacheDir)) {
+        if (!Files.exists(domainCacheDir))
+        {
             Files.createDirectories(domainCacheDir);
         }
 
@@ -186,7 +219,8 @@ public class JnlpLauncher {
         Path jarPath = domainCacheDir.resolve(getFileNameFromUrl(jarUrl));
 
         // If the JAR file already exists in the cache, skip the download
-        if (Files.exists(jarPath)) {
+        if (Files.exists(jarPath))
+        {
             System.out.println("JAR already exists in cache: " + jarPath.toString());
             return jarPath;
         }
@@ -202,10 +236,12 @@ public class JnlpLauncher {
 
         // Download the file to the cache directory
         try (InputStream in = conn.getInputStream();
-             OutputStream out = Files.newOutputStream(jarPath)) {
+             OutputStream out = Files.newOutputStream(jarPath))
+        {
             byte[] buffer = new byte[4096];
             int len;
-            while ((len = in.read(buffer)) != -1) {
+            while ((len = in.read(buffer)) != -1)
+            {
                 out.write(buffer, 0, len);
             }
         }
@@ -214,22 +250,28 @@ public class JnlpLauncher {
         return jarPath;
     }
 
-    private static String getDomainFromUrl(String urlString) {
-        try {
+    private static String getDomainFromUrl(String urlString)
+    {
+        try
+        {
             URL url = new URL(urlString);
             return url.getHost();  // Extract the domain (host) from the URL
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             LogManager.logError(logger, e.getMessage(), e);
             throw new RuntimeException("Invalid URL: " + urlString, e);
         }
     }
 
-    private static String getFileNameFromUrl(String jarUrl) {
+    private static String getFileNameFromUrl(String jarUrl)
+    {
         // Extract the file name from the URL (e.g., "file.jar" from "http://example.com/file.jar")
         return jarUrl.substring(jarUrl.lastIndexOf('/') + 1);
     }
 
-    private static String buildClasspath(List<Path> downloadedJars) {
+    private static String buildClasspath(List<Path> downloadedJars)
+    {
         StringBuilder classpath = new StringBuilder();
 
         // Include the path to the JavaFX SDK lib directory
@@ -237,8 +279,10 @@ public class JnlpLauncher {
         classpath.append(javafxLibPath).append(File.pathSeparator);
 
         // Add all downloaded JARs to the classpath
-        for (Path jar : downloadedJars) {
-            if (classpath.length() > 0) {
+        for (Path jar : downloadedJars)
+        {
+            if (classpath.length() > 0)
+            {
                 classpath.append(File.pathSeparator); // Add separator between paths
             }
             classpath.append(jar.toString());
@@ -251,15 +295,21 @@ public class JnlpLauncher {
         return classpath.toString();
     }
 
-    private static void addJarFilesFromFolder(File folder, StringBuilder classpath) {
-        if (folder.exists() && folder.isDirectory()) {
+    private static void addJarFilesFromFolder(File folder, StringBuilder classpath)
+    {
+        if (folder.exists() && folder.isDirectory())
+        {
             // List all files in the directory and its subdirectories
             File[] files = folder.listFiles();
-            for (File file : files) {
-                if (file.isDirectory()) {
+            for (File file : files)
+            {
+                if (file.isDirectory())
+                {
                     // Recurse into subdirectories
                     addJarFilesFromFolder(file, classpath);
-                } else if (file.getName().endsWith(".jar")) {
+                }
+                else if (file.getName().endsWith(".jar"))
+                {
                     // Add the JAR file to the classpath
                     classpath.append(File.pathSeparator).append(file.getAbsolutePath());
                 }
@@ -267,7 +317,8 @@ public class JnlpLauncher {
         }
     }
 
-    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp) throws IOException {
+    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp, LaunchEntry entry) throws IOException
+    {
         String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
 
         // Get the default JRE path from java.home
@@ -300,7 +351,8 @@ public class JnlpLauncher {
                 "javafx.graphics/com.sun.javafx.scene", "java.base/java.util"
         };
 
-        for (String open : opens) {
+        for (String open : opens)
+        {
             command.add("--add-opens");
             command.add(open + "=ALL-UNNAMED");
         }
@@ -318,8 +370,18 @@ public class JnlpLauncher {
         // Main class
         command.add(mainClass);
 
+
         // Add application arguments
         command.addAll(appArgs);
+
+        StoredCredential creds = CredentialManager.getCredential(entry.getId());
+
+        // Hardcoded credentials
+        if (creds != null)
+        {
+            command.add(creds.getUsername());
+            command.add(new String(creds.getPassword()));
+        }
 
         // Print the generated command for debugging
         System.out.println("Running command: " + String.join(" ", command));
@@ -330,25 +392,35 @@ public class JnlpLauncher {
         Process process = processBuilder.start();
 
         // Capture output and errors
-        new Thread(() -> {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+        new Thread(() ->
+        {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream())))
+            {
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null)
+                {
                     System.out.println(line);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }
         }).start();
 
-        new Thread(() -> {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+        new Thread(() ->
+        {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream())))
+            {
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null)
+                {
                     System.err.println(line);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }

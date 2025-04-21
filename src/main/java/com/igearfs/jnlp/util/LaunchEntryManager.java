@@ -7,71 +7,117 @@
 package com.igearfs.jnlp.util;
 
 import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.security.CredentialManager;
+import com.microsoft.credentialstorage.model.StoredCredential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Manages the loading and saving of all LaunchEntries in the left list.
  */
-public class LaunchEntryManager {
+public class LaunchEntryManager
+{
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntryManager.class);
     private static final String DATA_FILE = "jnlp_entries.txt";
 
-    public static void loadEntriesFromFile(List<LaunchEntry> entries) {
+    public static void loadEntriesFromFile(List<LaunchEntry> entries)
+    {
         String dataDir = System.getProperty("os.dataDir");
 
         File dataDirectory = new File(dataDir);
-        if (!dataDirectory.exists()) {
+        if (!dataDirectory.exists())
+        {
             dataDirectory.mkdirs();
         }
         File dataFile = new File(dataDir + "/" + DATA_FILE);
         boolean newSaves = false;
 
-        if (dataFile.exists() && dataFile.length() > 0) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(dataDir + "/" + DATA_FILE))) {
+        if (dataFile.exists() && dataFile.length() > 0)
+        {
+            try (BufferedReader reader = new BufferedReader(new FileReader(dataDir + "/" + DATA_FILE)))
+            {
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null)
+                {
                     String[] parts = line.split("\\|");
 
                     boolean ignoreDomainValidation = true; // Default to true for older entries
                     String iconPath = "/icons/rocket.png"; // Default icon path
 
-                    if (parts.length == 3) { // Old format (name, url, note)
+                    if (parts.length == 3)
+                    { // Old format (name, url, note)
                         parts = new String[]{parts[0], parts[1], parts[2], UUID.randomUUID().toString(), "true", iconPath};
                         newSaves = true;
-                    } else if (parts.length == 2) { // Even older format (name, url)
+                    }
+                    else if (parts.length == 2)
+                    { // Even older format (name, url)
                         parts = new String[]{parts[0], parts[1], "", UUID.randomUUID().toString(), "true", iconPath};
                         newSaves = true;
-                    } else if (parts.length == 4) { // Entries missing ignoreDomainValidation
+                    }
+                    else if (parts.length == 4)
+                    { // Entries missing ignoreDomainValidation
                         parts = new String[]{parts[0], parts[1], parts[2], parts[3], "true", iconPath};
                         newSaves = true;
-                    } else if (parts.length == 5) { // New format with ignoreDomainValidation and missing icon
+                    }
+                    else if (parts.length == 5)
+                    { // New format with ignoreDomainValidation and missing icon
                         ignoreDomainValidation = Boolean.parseBoolean(parts[4]);
                         parts = new String[]{parts[0], parts[1], parts[2], parts[3], String.valueOf(ignoreDomainValidation), iconPath};
                         newSaves = true;
-                    } else if (parts.length == 6) { // New format with all information
+                    }
+                    else if (parts.length == 6)
+                    { // New format with all information
                         ignoreDomainValidation = Boolean.parseBoolean(parts[4]);
                         iconPath = parts[5];
                         newSaves = true;
                     }
 
-                    // Add the entry to the list
-                    entries.add(new LaunchEntry(parts[0], parts[1], parts[2], parts[3], ignoreDomainValidation, iconPath));
+                    StoredCredential creds = CredentialManager.getCredential(parts[3]); // ID
+
+                    if (creds != null)
+                    {
+                        // Add the entry to the list
+                        entries.add(new LaunchEntry(
+                                parts[0],
+                                parts[1],
+                                parts[2],
+                                parts[3],
+                                ignoreDomainValidation,
+                                iconPath, creds.getUsername(), new String(creds.getPassword())));
+                    }
+                    else
+                    {
+                        // Add the entry to the list
+                        entries.add(new LaunchEntry(
+                                parts[0],
+                                parts[1],
+                                parts[2],
+                                parts[3],
+                                ignoreDomainValidation,
+                                iconPath, null, null));
+                    }
                 }
 
-                if (newSaves) {
+                if (newSaves)
+                {
                     saveEntriesToFile(entries); // Save to update old format entries
                 }
 
                 System.out.println("Entries loaded from " + dataDir + "/" + DATA_FILE);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
             }
-        } else {
+        }
+        else
+        {
             System.out.println("No previous entries found or file is empty.");
         }
 
@@ -79,18 +125,29 @@ public class LaunchEntryManager {
         entries.sort(Comparator.comparing(LaunchEntry::getName, String::compareToIgnoreCase));
     }
 
-    public static void saveEntriesToFile(List<LaunchEntry> entries) {
+    public static void saveEntriesToFile(List<LaunchEntry> entries)
+    {
 
         String dataDir = System.getProperty("os.dataDir");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataDir + "/" + DATA_FILE))) {
-            for (LaunchEntry entry : entries) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataDir + "/" + DATA_FILE)))
+        {
+            for (LaunchEntry entry : entries)
+            {
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
                         entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
+
+                System.out.println("Saving Entry: user: " + entry.getUserName() + " pass: " + entry.getPassword());
+                if (entry.getUserName() != null && entry.getPassword() != null)
+                {
+                    CredentialManager.storeCredential(entry.getId(), entry.getUserName(), entry.getPassword());
+                }
                 writer.newLine();
             }
             System.out.println("Entries saved to " + dataDir + "/" + DATA_FILE);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
         }
