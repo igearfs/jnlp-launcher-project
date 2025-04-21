@@ -6,9 +6,11 @@ If you like using the programs feel free to support:
 
 * [Support me on Ko-fi](https://ko-fi.com/igearfs)
 
-# 🌈 **JNLP Launcher – v1.3.1** 🌈
+# 🌈 **JNLP Launcher – v1.5.1** 🌈
 
 * Works with Mirth Connect 4.5.2
+* Works with Bridgelink 4.5.2 
+* Works with OIE 4.5.2
 
 ⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
 Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
@@ -59,16 +61,19 @@ Before using the app, generate the icon list:
 
 ## 🌟 **Features**
 
-✅ **Runs on JVM 17+ without WIX Installer or Bundled JRE just compile with 17 and run the jar** 
-✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** (20+ is required for jpackage to package the files)
-✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes.  
-✅ **🔎 Search Functionality** – Instantly find entries by name or URL.    
-✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination.  
-✅ **🎨 Icon Highlighting** – Selected icons get highlighted, making selection clear.  
-✅ **📜 Persistent Storage** – Entries and icons persist between sessions.
-✅ **📜 Caches jarfile buy hostname** – In cache folder you will see things like localhost.
+✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** (20+ is required for jpackage to package the files). **
+✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes. ** 
+✅ **🔎 Search Functionality** – Instantly find entries by name or URL. **
+✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination. **  
+✅ **🎨 Icon Highlighting** – Selected icons get highlighted, making selection clear. **  
+✅ **📜 Persistent Storage** – Entries and icons persist between sessions. **
+✅ **📜 Caches jarfile buy hostname** – In cache folder you will see things like localhost. **
 ✅ **📜 Works with Mirth Connect 4.5.2 **
-✅ **📜 Works with current Bridgelink fork of Mirth Connect 4.5.2 **
+✅ **📜 Works with current OIE, Bridgelink and Mirth Connect fork of Mirth Connect 4.5.2 **
+✅ **📜 Auto Launch your Connects with adding username and password (Uses System password manager) **
+✅ **📜 Cache got corrupted... no worries we have a clear cache button per instance! **
+✅ **📜 Forgot to save before moving on or closing the app. We alert you for that too! **
+✅ **📜 Spinner added that it's doing something. **
 
 ---
 
@@ -76,7 +81,7 @@ Before using the app, generate the icon list:
 
 ### **📌 Adding a New Entry**
 🟢 Click `+ Add`  
-🟢 Fill in Name, URL, and Notes  
+🟢 Fill in Name, URL, and Notes (Username and password optional)  
 🟢 Click `Select Icon` → Choose an icon → Click `Done`  
 🟢 Click `Save`
 
@@ -134,7 +139,7 @@ Before using the app, generate the icon list:
 - Run `icon.bat` to regenerate the list.
 
 ### 🔹 **App Fails to Launch?**
-- Make sure you are using **JVM 21+** or the **included JRE** (Windows only).
+- Make sure you are using **JVM 20+** or the **included JRE** (Windows only).
 - Check the console for errors and missing dependencies.
 
 ---

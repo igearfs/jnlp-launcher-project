@@ -10,3 +10,7 @@ v 1.3.1
 v 1.4.1
 * Added notification that you did not save before launching or closing the application
 * Fixed spinner popup when launcher is clicked and on application launch.
+
+v 1.5.1
+* Added clear cache button so you can download new jar's and update
+* Added the ability to add in username/password for auto login when you launch.
