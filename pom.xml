@@ -16,7 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jfx.version>17</jfx.version> <!-- Use JavaFX 17 -->
+        <jfx.version>17.0.2</jfx.version> <!-- Use JavaFX 17 -->
         <maven.compiler.source>17</maven.compiler.source> <!-- JDK 17 -->
         <maven.compiler.target>17</maven.compiler.target> <!-- JDK 17 -->
         <!-- Wix Path for jpackage -->
@@ -53,7 +53,6 @@
             <artifactId>javafx-swing</artifactId>
             <version>${jfx.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
@@ -63,7 +62,7 @@
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.2.1</version>
+            <version>11.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>

@@ -319,7 +319,7 @@ public class JnlpLauncher
 
     private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp, LaunchEntry entry) throws IOException
     {
-        String javafxPath = "javafx-sdk-17.0.14/lib";  // Ensure absolute path
+        String javafxPath = "javafx-sdk-17.0.2/lib";  // Ensure absolute path
 
         // Get the default JRE path from java.home
         String javaHome = System.getProperty("java.home");
@@ -333,7 +333,7 @@ public class JnlpLauncher
         command.add("--module-path");
         command.add(javafxPath);
         command.add("--add-modules");
-        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media");
+        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media,javafx.swing,javafx.swt");
 
         // --add-opens (necessary to avoid IllegalAccessError)
         String[] opens = {

@@ -230,12 +230,12 @@ Morocco Standard Time:EH:Africa/El_Aaiun:
 Morocco Standard Time:MA:Africa/Casablanca:
 Morocco Standard Time:001:Africa/Casablanca:
 Mountain Standard Time:CA:America/Edmonton:
-Mountain Standard Time:MX:America/Ciudad_Juarez:
+Mountain Standard Time:MX:America/Ojinaga:
 Mountain Standard Time:US:America/Denver:
 Mountain Standard Time:ZZ:MST7MDT:
 Mountain Standard Time:001:America/Denver:
-Mountain Standard Time (Mexico):MX:America/Mazatlan:
-Mountain Standard Time (Mexico):001:America/Mazatlan:
+Mountain Standard Time (Mexico):MX:America/Chihuahua:
+Mountain Standard Time (Mexico):001:America/Chihuahua:
 Myanmar Standard Time:CC:Indian/Cocos:
 Myanmar Standard Time:MM:Asia/Rangoon:
 Myanmar Standard Time:001:Asia/Rangoon:
@@ -366,14 +366,13 @@ South Africa Standard Time:LS:Africa/Maseru:
 South Africa Standard Time:MW:Africa/Blantyre:
 South Africa Standard Time:MZ:Africa/Maputo:
 South Africa Standard Time:RW:Africa/Kigali:
+South Africa Standard Time:SS:Africa/Juba:
 South Africa Standard Time:SZ:Africa/Mbabane:
 South Africa Standard Time:ZA:Africa/Johannesburg:
 South Africa Standard Time:ZM:Africa/Lusaka:
 South Africa Standard Time:ZW:Africa/Harare:
 South Africa Standard Time:ZZ:Etc/GMT-2:
 South Africa Standard Time:001:Africa/Johannesburg:
-South Sudan Standard Time:SS:Africa/Juba:
-South Sudan Standard Time:001:Africa/Juba:
 Sri Lanka Standard Time:LK:Asia/Colombo:
 Sri Lanka Standard Time:001:Asia/Colombo:
 Sudan Standard Time:SD:Africa/Khartoum:

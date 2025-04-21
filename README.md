@@ -74,6 +74,7 @@ Before using the app, generate the icon list:
 ✅ **📜 Cache got corrupted... no worries we have a clear cache button per instance! **
 ✅ **📜 Forgot to save before moving on or closing the app. We alert you for that too! **
 ✅ **📜 Spinner added that it's doing something. **
+✅ **📜 Reporting a Ticket check the <USER_HOME> log folder and grab the error. **
 
 ---
 
