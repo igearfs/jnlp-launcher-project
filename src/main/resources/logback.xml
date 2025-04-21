@@ -1,7 +1,7 @@
 <configuration>
 
     <!-- Define log directory properties from system properties, with fallbacks -->
-    <property scope="context" name="logfolder" value="${os.logdir}" />
+    <property scope="context" name="logfolder" value="${os.logdir}"/>
 
     <!-- Rolling File Appender -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -19,12 +19,12 @@
 
     <!-- Logger for com.igearfs package -->
     <logger name="com.igearfs" level="debug" additivity="false">
-        <appender-ref ref="ROLLING" />
+        <appender-ref ref="ROLLING"/>
     </logger>
 
     <!-- Root Logger -->
     <root level="debug">
-        <appender-ref ref="ROLLING" />
+        <appender-ref ref="ROLLING"/>
     </root>
 
 </configuration>

@@ -6,33 +6,34 @@
 
 package com.igearfs.jnlp.controller;
 
+import com.igearfs.jnlp.AlertHelper;
 import com.igearfs.jnlp.JnlpLauncher;
 import com.igearfs.jnlp.JnlpLauncherApp;
 import com.igearfs.jnlp.LoadingPopup;
 import com.igearfs.jnlp.model.LaunchEntry;
+import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.LaunchEntryManager;
 import com.igearfs.jnlp.util.LogManager;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.util.Duration;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
+
 import static com.igearfs.jnlp.util.LaunchEntryManager.saveEntriesToFile;
 
 /**
  * Runs the right hand pane saves/updates/data load/deletes you know CRUD Stuff.
  */
-public class LaunchEntryController {
+public class LaunchEntryController
+{
     private static final Logger logger = LoggerFactory.getLogger(LaunchEntryController.class);
 
     private final JnlpLauncherApp app;
@@ -48,8 +49,11 @@ public class LaunchEntryController {
     private final TextField searchField;
     private LoadingPopup lp;
     private Stage primaryStage;
+    private final TextField userNameField;
+    private final PasswordField passwordField;
 
-    public LaunchEntryController(JnlpLauncherApp app) {
+    public LaunchEntryController(JnlpLauncherApp app)
+    {
         this.app = app;
         this.entries = app.getEntries();
         this.saveButton = app.getSaveButton();
@@ -63,11 +67,15 @@ public class LaunchEntryController {
         this.searchField = app.getSearchField();
         this.primaryStage = app.getPrimaryStage();
         this.lp = app.getLoadingPopup();
+        this.userNameField = app.getUserNameField();
+        this.passwordField = app.getPasswordField();
     }
 
-    public void saveSelectedEntry(ImageView iconImageView) {
+    public void saveSelectedEntry(ImageView iconImageView)
+    {
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
+        if (selectedItem != null)
+        {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
@@ -77,15 +85,20 @@ public class LaunchEntryController {
             selectedEntry.setUrl(urlField.getText());
             selectedEntry.setNote(noteField.getText());
             selectedEntry.setIgnoreDomainValidation(ignoreDomainCheckBox.isSelected());
-            if(ColorGridCell.lastSelectedCell != null) {
+            selectedEntry.setUserName(userNameField.getText());
+            selectedEntry.setPassword(passwordField.getText());
+            if (ColorGridCell.lastSelectedCell != null)
+            {
                 selectedEntry.setIconPath(ColorGridCell.lastSelectedCell.getIconName());
             }
             LaunchEntryManager.saveEntriesToFile(entries);
             populateListView();
 
             // Find the updated entry by its original ID and reselect it
-            for (int i = 0; i < entries.size(); i++) {
-                if (entries.get(i).getId().equals(selectedEntryId)) {
+            for (int i = 0; i < entries.size(); i++)
+            {
+                if (entries.get(i).getId().equals(selectedEntryId))
+                {
                     HBox hbox = (HBox) listViewJnlp.getItems().get(i);
                     listViewJnlp.getSelectionModel().select(hbox);
                     break;
@@ -94,14 +107,19 @@ public class LaunchEntryController {
         }
     }
 
-    public void populateListView() {
+    public void populateListView()
+    {
         listViewJnlp.getItems().clear();
         String currentSearchText = searchField.getText();
 
-        if (!currentSearchText.isEmpty()) {
+        if (!currentSearchText.isEmpty())
+        {
             filterList(currentSearchText);
-        } else {
-            for (LaunchEntry entry : entries) {
+        }
+        else
+        {
+            for (LaunchEntry entry : entries)
+            {
                 HBox hbox = new HBox(10);
                 hbox.setAlignment(Pos.CENTER_LEFT);
 
@@ -110,16 +128,22 @@ public class LaunchEntryController {
 
                 // Create the ImageView for the icon
                 ImageView imageView;
-                try {
+                try
+                {
                     // If the iconPath is relative and inside the resources folder, use getResource
                     URL iconUrl = getClass().getResource(iconPath);  // Assumes iconPath is a relative path inside resources
-                    if (iconUrl != null) {
+                    if (iconUrl != null)
+                    {
                         imageView = new ImageView(new Image(iconUrl.toExternalForm()));
-                    } else {
+                    }
+                    else
+                    {
                         // If the icon is not found, use a fallback icon
                         imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     // If there's an error loading the image, fall back to default icon
                     LogManager.logError(logger, e.getMessage(), e);
                     imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
@@ -138,13 +162,16 @@ public class LaunchEntryController {
         }
     }
 
-    public void filterList(String searchText) {
+    public void filterList(String searchText)
+    {
         listViewJnlp.getItems().clear();
-        for (LaunchEntry entry : entries) {
+        for (LaunchEntry entry : entries)
+        {
             if (entry.getName().toLowerCase().contains(searchText.toLowerCase()) ||
                     entry.getUrl().toLowerCase().contains(searchText.toLowerCase()) ||
                     entry.getId().toLowerCase().contains(searchText.toLowerCase()) ||
-                    entry.getNote().toLowerCase().contains(searchText.toLowerCase())) {
+                    entry.getNote().toLowerCase().contains(searchText.toLowerCase()))
+            {
 
                 HBox hbox = new HBox(10);
                 hbox.setAlignment(Pos.CENTER_LEFT);
@@ -154,16 +181,22 @@ public class LaunchEntryController {
 
                 // Create the ImageView for the icon
                 ImageView imageView;
-                try {
+                try
+                {
                     // If the iconPath is relative and inside the resources folder, use getResource
                     URL iconUrl = getClass().getResource(iconPath);  // Assumes iconPath is a relative path inside resources
-                    if (iconUrl != null) {
+                    if (iconUrl != null)
+                    {
                         imageView = new ImageView(new Image(iconUrl.toExternalForm()));
-                    } else {
+                    }
+                    else
+                    {
                         // If the icon is not found, use a fallback icon
                         imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     LogManager.logError(logger, e.getMessage(), e);
                     // If there's an error loading the image, fall back to default icon
                     imageView = new ImageView(new Image(getClass().getResource("/icons/rocket.png").toExternalForm()));
@@ -183,39 +216,42 @@ public class LaunchEntryController {
     }
 
 
-    public void launchSelectedEntry() {
+    public void launchSelectedEntry()
+    {
 
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
 
-        if (selectedItem != null) {
+        if (selectedItem != null)
+        {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
-            try {
+            try
+            {
                 JnlpLauncher.loadJnlpAndLaunch(selectedEntry, lp);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 LogManager.logError(logger, e.getMessage(), e);
                 showErrorAlert(e.getMessage());
             }
         }
     }
 
-    public void showErrorAlert(final String errorMessage) {
-        Platform.runLater(() -> {
-            lp.hide();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("An error occurred");
-            alert.setContentText(errorMessage);
-            alert.showAndWait();
+    public void showErrorAlert(final String errorMessage)
+    {
 
-        });
+        lp.hide();
+        AlertHelper.showAlertAndCloseSpinner(lp, Alert.AlertType.ERROR, "Error", "An error occurred", errorMessage);
+
     }
 
-    public void deleteSelectedEntry() {
+    public void deleteSelectedEntry()
+    {
         HBox selectedItem = listViewJnlp.getSelectionModel().getSelectedItem();
 
-        if (selectedItem != null) {
+        if (selectedItem != null)
+        {
             int selectedIndex = listViewJnlp.getItems().indexOf(selectedItem);
             LaunchEntry selectedEntry = entries.get(selectedIndex);
 
@@ -224,8 +260,11 @@ public class LaunchEntryController {
             alert.setTitle("Confirm Deletion");
             alert.setHeaderText("Are you sure you want to delete this entry?");
             alert.setContentText(selectedEntry.getName());
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
+            CredentialManager.deleteCredential(selectedEntry.getId());
+            alert.showAndWait().ifPresent(response ->
+            {
+                if (response == ButtonType.OK)
+                {
                     // Delete entry from the list
                     entries.remove(selectedEntry);
                     saveEntriesToFile(entries);
@@ -236,7 +275,8 @@ public class LaunchEntryController {
         }
     }
 
-    private void resetRightPane() {
+    private void resetRightPane()
+    {
         // Clear all fields and disable buttons
         nameField.clear();
         urlField.clear();
@@ -246,5 +286,7 @@ public class LaunchEntryController {
         launchButton.setDisable(true);
         saveButton.setDisable(true);
         deleteButton.setDisable(true);
+        passwordField.clear();
+        userNameField.clear();
     }
 }
