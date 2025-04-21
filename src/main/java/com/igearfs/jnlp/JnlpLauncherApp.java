@@ -221,24 +221,36 @@ public class JnlpLauncherApp extends Application
         leftPane.getChildren().add(searchBox);
         leftPane.getChildren().add(addButton);
 
-        listViewJnlp.setOnMouseClicked(e ->
-        {
-            isLoading = true;
+// Keep track of the previously selected index
+        final int[] previousIndex = { -1 };
+
+        listViewJnlp.getSelectionModel().selectedIndexProperty().
+                addListener((obs, oldIndex, newIndex) -> {
+            if (isLoading) return;
+
             if (isModified)
             {
                 boolean confirmed = showConfirmationDialog("You have unsaved changes. Exit without saving?");
                 if (!confirmed)
                 {
-                    e.consume(); // Cancel close
+                    // Revert to the previously selected index
+                    isLoading = true;
+                    listViewJnlp.getSelectionModel().select(oldIndex.intValue());
+                    isLoading = false;
+                    return;
                 }
                 else
                 {
                     isModified = false;
                 }
             }
+
+            isLoading = true;
             updateRightPane();
             isLoading = false;
+            previousIndex[0] = newIndex.intValue();
         });
+
         leftPane.getChildren().add(listViewJnlp);
         return leftPane;
     }
@@ -604,9 +616,11 @@ public class JnlpLauncherApp extends Application
             saveButton.setDisable(false);
             saveButton.setOnAction(e ->
             {
-                controller.saveSelectedEntry(iconImageView);
+                isLoading = true;
                 isModified = false;
+                controller.saveSelectedEntry(iconImageView);
                 AlertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Saved", "Entry Updated", "Save complete");
+                isLoading = false;
             });
             deleteButton.setDisable(false);
             ignoreDomainCheckBox.setDisable(false);
