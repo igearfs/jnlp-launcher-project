@@ -21,6 +21,7 @@
         <maven.compiler.target>17</maven.compiler.target> <!-- JDK 17 -->
         <!-- Wix Path for jpackage -->
         <wix.path>wix314-binaries</wix.path> <!-- Replace with your actual Wix path -->
+        <target.os>javafx-win-amd64_17</target.os>  <!-- Example value -->
     </properties>
 
     <dependencies>
@@ -103,6 +104,12 @@
     </repositories>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Maven Compiler Plugin for JDK 17 -->
             <plugin>
@@ -210,6 +217,9 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <target.os>javafx-win-amd64_17</target.os>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -230,6 +240,7 @@
                                         <argument>${project.basedir}/${wix.path}</argument>
                                         <argument>${project.artifactId}-${project.version}.jar</argument>
                                         <argument>${java.home}</argument>
+                                        <argument>${project.basedir}/javafx-win-amd64_17</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -238,7 +249,33 @@
                 </plugins>
             </build>
         </profile>
-<!--        <profile>-->
+        <profile>
+            <id>macos-x64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>x86_64</arch>
+                </os>
+            </activation>
+            <properties>
+                <target.os>macos-x64</target.os>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>macos-arm64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <target.os>javafx-macos-arm64_17</target.os>
+            </properties>
+        </profile>
+
+        <!--        <profile>-->
 <!--            <id>osx-amd64</id>-->
 <!--            <activation>-->
 <!--                <os>-->
