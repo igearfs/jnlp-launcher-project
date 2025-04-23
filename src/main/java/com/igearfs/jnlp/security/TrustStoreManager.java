@@ -171,7 +171,7 @@ public class TrustStoreManager
             System.out.println("Cert Downloaded");
 
             // Step 3: Save the downloaded certificate to a file
-            String certFilePath = entry.getName() + "_"+entry.getId();
+            String certFilePath = entry.getName() + "_" + entry.getId();
             saveCertificateToFile(cert, certFilePath);
 
             // Step 4: Add the certificate to the JRE truststore using keytool
