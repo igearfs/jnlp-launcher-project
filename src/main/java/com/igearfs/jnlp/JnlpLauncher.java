@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +65,7 @@ public class JnlpLauncher
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
+
             System.exit(2);
         }
     }
@@ -81,6 +83,7 @@ public class JnlpLauncher
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
+            lp.hide();
         }
         String jnlpUrl = entry.getUrl();
         Document jnlpDoc = loadJnlp(jnlpUrl);
@@ -90,6 +93,7 @@ public class JnlpLauncher
 
         if (mainClass == null || mainClass.isEmpty())
         {
+            lp.hide();
             throw new RuntimeException("Main class not found in JNLP");
         }
 
@@ -295,6 +299,27 @@ public class JnlpLauncher
         return classpath.toString();
     }
 
+    // Static method to load system names from a file in resources
+    public static String loadTargetOS() {
+        Properties properties = new Properties();
+
+        try (InputStream input = JnlpLauncher.class.getClassLoader().getResourceAsStream("app.properties")) {
+            if (input == null) {
+                System.out.println("Sorry, unable to find config.properties");
+                return null;
+            }
+            // Load the properties from the file
+            properties.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        // Return the value of target.os from the properties file
+        return properties.getProperty("target.os");
+    }
+
+
     private static void addJarFilesFromFolder(File folder, StringBuilder classpath)
     {
         if (folder.exists() && folder.isDirectory())
@@ -319,7 +344,7 @@ public class JnlpLauncher
 
     private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp, LaunchEntry entry) throws IOException
     {
-        String javafxPath = "javafx-sdk-17.0.2/lib";  // Ensure absolute path
+        String javafxPath = loadTargetOS() + "/lib";  // Ensure absolute path
 
         // Get the default JRE path from java.home
         String javaHome = System.getProperty("java.home");
@@ -406,6 +431,7 @@ public class JnlpLauncher
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
+                lp.hide();
             }
         }).start();
 
@@ -423,9 +449,10 @@ public class JnlpLauncher
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
+                lp.hide();
             }
         }).start();
-
+        lp.hide();
     }
 
 }

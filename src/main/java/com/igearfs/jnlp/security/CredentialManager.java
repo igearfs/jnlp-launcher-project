@@ -25,9 +25,10 @@ public class CredentialManager
      */
     public static void storeCredential(String key, String username, String password)
     {
-        if (key == null || username == null || password == null)
+        if (key == null || username == null || password == null || username.isEmpty() || password.isEmpty() )
         {
-            throw new IllegalArgumentException("Key, username, and password must not be null.");
+            //throw new IllegalArgumentException("Key, username, and password must not be null.");
+            return;
         }
         key = KEY_PREFIX + key;
 
