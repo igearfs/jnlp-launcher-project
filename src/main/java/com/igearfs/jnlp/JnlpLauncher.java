@@ -6,6 +6,7 @@
 
 package com.igearfs.jnlp;
 
+import javafx.concurrent.Task;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.security.TrustStoreManager;
@@ -105,11 +106,34 @@ public class JnlpLauncher
         }
 
         String classpath = buildClasspath(downloadedJars);
-        launchApp(mainClass, classpath, appArgs, lp, entry);
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                launchApp(mainClass, classpath, appArgs, lp, entry);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            // UI updates after process completes, if needed
+            lp.hide();  // safer to hide here instead of inside launchApp
+        });
+
+        task.setOnFailed(e -> {
+            lp.hide();
+            task.getException().printStackTrace();
+        });
+
+        new Thread(task).start();
+
     }
 
     private static Document loadJnlp(String jnlpUrl) throws Exception
     {
+        if (!jnlpUrl.endsWith("webstart")) {
+            jnlpUrl = jnlpUrl.endsWith("/") ? jnlpUrl + "webstart" : jnlpUrl + "/webstart";
+        }
+
         System.out.println("Loading JNLP from: " + jnlpUrl);
         URL url = new URL(jnlpUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -431,7 +455,7 @@ public class JnlpLauncher
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
-                lp.hide();
+
             }
         }).start();
 
@@ -449,10 +473,10 @@ public class JnlpLauncher
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
-                lp.hide();
+
             }
         }).start();
-        lp.hide();
+
     }
 
 }
