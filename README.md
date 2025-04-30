@@ -6,7 +6,7 @@ If you like using the programs feel free to support:
 
 * [Support me on Ko-fi](https://ko-fi.com/igearfs)
 
-# 🌈 **JNLP Launcher – v1.5.1** 🌈
+# 🌈 **JNLP Launcher – v1.6.1** 🌈
 
 * Works with Mirth Connect 4.5.2
 * Works with Bridgelink 4.5.2 

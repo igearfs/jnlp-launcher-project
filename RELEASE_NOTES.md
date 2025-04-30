@@ -14,3 +14,6 @@ v 1.4.1
 v 1.5.1
 * Added clear cache button so you can download new jar's and update
 * Added the ability to add in username/password for auto login when you launch.
+
+V 1.6.1
+Fixing build issue for each os. Have windows and mac. Next Linux

@@ -26,7 +26,7 @@ public class ColorGridCell extends StackPane
     private boolean isSelected = false;
 
     // Static variable to track the currently selected cell
-    public static ColorGridCell lastSelectedCell = null;
+    public static ColorGridCell lastSelectedCell = new ColorGridCell("rocket.png", new Image(ColorGridCell.class.getResourceAsStream("/icons/rocket.png")));
 
     public ColorGridCell(String iconName, Image iconImage)
     {

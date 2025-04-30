@@ -16,7 +16,7 @@ echo "Running jpackage for $(uname)..."
 # Customize these as needed
 APP_NAME="SyncSyndicate"
 MAIN_CLASS="com.igearfs.jnlp.Main"
-VERSION="1.5.1"
+VERSION="1.6.1"
 DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
 VENDOR="In-Game Event, A Red Flag Syndicate LLC"
 LICENSE_FILE="LICENSE.txt"
