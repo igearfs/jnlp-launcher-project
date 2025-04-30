@@ -619,7 +619,7 @@ public class JnlpLauncherApp extends Application
                 isLoading = true;
                 isModified = false;
                 controller.saveSelectedEntry(iconImageView);
-                AlertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Saved", "Entry Updated", "Save complete");
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION, "Saved", "Entry Updated", "Save complete");
                 isLoading = false;
             });
             deleteButton.setDisable(false);

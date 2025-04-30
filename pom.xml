@@ -258,7 +258,7 @@
                 </os>
             </activation>
             <properties>
-                <target.os>macos-x64</target.os>
+                <target.os>javafx-macos-x64</target.os>
             </properties>
         </profile>
 
