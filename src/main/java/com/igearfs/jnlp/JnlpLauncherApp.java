@@ -292,10 +292,10 @@ public class JnlpLauncherApp extends Application
         popupLayout.getChildren().addAll(
                 new Label("Name:"), newNameField,
                 new Label("URL:"), newUrlField,
-                new Label("Notes:"), newNoteField,
-                new Label("Icon:"),
                 new Label("Username:"), newUserName,
                 new Label("Password:"), newPasswordField,
+                new Label("Notes:"), newNoteField,
+                new Label("Icon:"),
                 iconImageView,
                 selectIconButton,
                 newIgnoreDomainCheckBox,
