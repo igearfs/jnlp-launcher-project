@@ -307,7 +307,7 @@ public class JnlpLauncherApp extends Application
 
         okButton.setOnAction(e ->
         {
-            System.out.println("ICON SAVING FROM POPUP::" + iconImageView.getImage().getUrl());
+
             // Create a new LaunchEntry with the selected icon path
             LaunchEntry newEntry = new LaunchEntry(
                     newNameField.getText(),
@@ -601,10 +601,10 @@ public class JnlpLauncherApp extends Application
                     new Label("ID: " + selectedEntry.getId()),
                     new Label("Name:"), nameField,
                     new Label("URL:"), urlField,
-                    new Label("Notes:"), noteField,
-                    new Label("Current Icon:"),
                     new Label("Username:"), usernameField,
                     new Label("Password:"), passwordField,
+                    new Label("Notes:"), noteField,
+                    new Label("Current Icon:"),
                     iconImageView,
                     selectIconButton,
                     ignoreDomainCheckBox,
