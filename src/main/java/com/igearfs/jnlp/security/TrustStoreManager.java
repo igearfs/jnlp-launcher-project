@@ -35,7 +35,7 @@ public class TrustStoreManager
     public static X509Certificate downloadCertificate(String jnlpUrl) throws Exception
     {
         URL url = new URL(jnlpUrl);
-        System.out.println("URL made");
+//        System.out.println("URL made");
 
         // Use a custom TrustManager that doesn't perform any certificate verification
         TrustManager[] trustAllCertificates = new TrustManager[]{

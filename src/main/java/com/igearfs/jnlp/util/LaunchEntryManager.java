@@ -108,7 +108,7 @@ public class LaunchEntryManager
                     saveEntriesToFile(entries); // Save to update old format entries
                 }
 
-                System.out.println("Entries loaded from " + dataDir + "/" + DATA_FILE);
+                LogManager.logDebug(logger,"Entries loaded from " + dataDir + "/" + DATA_FILE);
             }
             catch (IOException e)
             {
@@ -118,7 +118,7 @@ public class LaunchEntryManager
         }
         else
         {
-            System.out.println("No previous entries found or file is empty.");
+            LogManager.logDebug(logger,"No previous entries found or file is empty.");
         }
 
         // Sort the entries by name (case insensitive)
@@ -137,14 +137,14 @@ public class LaunchEntryManager
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
                         entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
 
-                System.out.println("Saving Entry: user: " + entry.getUserName() + " pass: " + entry.getPassword());
+                LogManager.logDebug(logger,"Saving Entry: user: " + entry.getUserName() + " pass: " + entry.getPassword());
                 if (entry.getUserName() != null && entry.getPassword() != null)
                 {
                     CredentialManager.storeCredential(entry.getId(), entry.getUserName(), entry.getPassword());
                 }
                 writer.newLine();
             }
-            System.out.println("Entries saved to " + dataDir + "/" + DATA_FILE);
+            LogManager.logDebug(logger,"Entries saved to " + dataDir + "/" + DATA_FILE);
         }
         catch (IOException e)
         {
