@@ -11,7 +11,7 @@
 
     <groupId>com.igearfs</groupId>
     <artifactId>SyncSyndicate-launcher</artifactId>
-    <version>1.6.1</version>
+    <version>1.7.1</version>
     <name>jnlp-launcher</name>
 
     <properties>

@@ -17,3 +17,10 @@ v 1.5.1
 
 V 1.6.1
 Fixing build issue for each os. Have windows and mac. Next Linux
+
+v 1.7.1
+Adds webstart if it is not at the end of the url.
+Icon defaults to Rocket if not selected
+Fixed UI order on right pane and creation.
+Cancel button removed from save confirmation.
+System printouts reduced to logger.debug and logger.error. (not all of them)
