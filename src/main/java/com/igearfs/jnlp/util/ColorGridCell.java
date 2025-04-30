@@ -14,19 +14,26 @@ import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+
 /**
  * This class is the one that loads all those icons. Yep all 4,000+
  */
 public class ColorGridCell extends StackPane
 {
+    // Static variable to track the currently selected cell
+    public static ColorGridCell lastSelectedCell;
+    static
+    {
+        URL iconUrl = ColorGridCell.class.getResource("/icons/rocket.png");
+        Image icon = new Image(iconUrl.toExternalForm());
+        lastSelectedCell = new ColorGridCell("/icons/rocket.png", icon);
+    }
     private static final Logger logger = LoggerFactory.getLogger(ColorGridCell.class);
     private ImageView iconImageView;
     private Rectangle backgroundRectangle;
     private String iconName;
     private boolean isSelected = false;
-
-    // Static variable to track the currently selected cell
-    public static ColorGridCell lastSelectedCell = new ColorGridCell("rocket.png", new Image(ColorGridCell.class.getResourceAsStream("/icons/rocket.png")));
 
     public ColorGridCell(String iconName, Image iconImage)
     {
@@ -39,6 +46,7 @@ public class ColorGridCell extends StackPane
 
         // Create the ImageView for the icon and set size to 40px
         iconImageView = new ImageView(iconImage);
+        iconImageView.setId(iconName);
         iconImageView.setFitWidth(40); // Icon size set to 40px
         iconImageView.setFitHeight(40); // Icon size set to 40px
 

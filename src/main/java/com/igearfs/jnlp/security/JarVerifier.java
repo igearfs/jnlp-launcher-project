@@ -6,6 +6,11 @@
 
 package com.igearfs.jnlp.security;
 
+import com.igearfs.jnlp.JnlpLauncher;
+import com.igearfs.jnlp.util.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +19,7 @@ import java.nio.file.Paths;
 
 public class JarVerifier
 {
+    private static final Logger logger = LoggerFactory.getLogger(JarVerifier.class);
 
     // Run the jarsigner verify command as an external process
     public static boolean verifyJarSignature(Path jarPath)
@@ -45,12 +51,12 @@ public class JarVerifier
             int exitCode = process.waitFor();
             if (exitCode == 0)
             {
-                System.out.println("JAR verification successful.");
+                LogManager.logDebug(logger,"JAR verification successful.");
                 return true;  // Verification successful
             }
             else
             {
-                System.out.println("JAR verification failed.");
+                LogManager.logDebug(logger,"JAR verification failed.");
                 return false;  // Verification failed
             }
         }
@@ -76,14 +82,15 @@ public class JarVerifier
                     .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
                     .forEach(jarPath ->
                     {
-                        System.out.println("Verifying: " + jarPath.getFileName());
+                        LogManager.logDebug(logger,"Verifying: " + jarPath.getFileName());
                         boolean isValid = verifyJarSignature(jarPath);
-                        System.out.println(jarPath.getFileName() + " is " + (isValid ? "VALID ✅" : "INVALID ❌"));
+                        LogManager.logDebug(logger,jarPath.getFileName() + " is " + (isValid ? "VALID ✅" : "INVALID ❌"));
                     });
         }
         catch (IOException e)
         {
             System.err.println("Failed to list directory: " + directory);
+            LogManager.logError(logger, e.getMessage(), e);
             e.printStackTrace();
         }
     }

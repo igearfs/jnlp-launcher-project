@@ -134,7 +134,7 @@ public class JnlpLauncher
             jnlpUrl = jnlpUrl.endsWith("/") ? jnlpUrl + "webstart" : jnlpUrl + "/webstart";
         }
 
-        System.out.println("Loading JNLP from: " + jnlpUrl);
+        LogManager.logDebug(logger, "Loading JNLP URL: " + jnlpUrl);
         URL url = new URL(jnlpUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -178,7 +178,7 @@ public class JnlpLauncher
                     }
                 }
 
-                System.out.println("Cache for entry '" + entry.getName() + "' cleared successfully.");
+                LogManager.logDebug(logger,"Cache for entry '" + entry.getName() + "' cleared successfully.");
             }
             catch (IOException e)
             {
@@ -189,7 +189,7 @@ public class JnlpLauncher
         }
         else
         {
-            System.out.println("No cache found for entry '" + entry.getName() + "'.");
+            LogManager.logDebug(logger,"No cache found for entry '" + entry.getName() + "'.");
         }
     }
 
@@ -249,12 +249,12 @@ public class JnlpLauncher
         // If the JAR file already exists in the cache, skip the download
         if (Files.exists(jarPath))
         {
-            System.out.println("JAR already exists in cache: " + jarPath.toString());
+            LogManager.logDebug(logger,"JAR already exists in cache: " + jarPath.toString());
             return jarPath;
         }
 
         // Download the JAR file if it doesn't exist
-        System.out.println("Downloading JAR from: " + jarUrl);
+        LogManager.logDebug(logger,"Downloading JAR from: " + jarUrl);
         URL url = new URL(jarUrl);
 
         // Open a connection to the URL
@@ -274,11 +274,11 @@ public class JnlpLauncher
             }
         }
 
-        System.out.println("Downloaded JAR to: " + jarPath.toString());
+        LogManager.logDebug(logger,"Downloaded JAR to: " + jarPath.toString());
         return jarPath;
     }
 
-    private static String getDomainFromUrl(String urlString)
+    private static String getDomainFromUrl(String urlString) throws IOException
     {
         try
         {
@@ -288,7 +288,7 @@ public class JnlpLauncher
         catch (Exception e)
         {
             LogManager.logError(logger, e.getMessage(), e);
-            throw new RuntimeException("Invalid URL: " + urlString, e);
+            throw new IOException("Invalid URL: " + urlString, e);
         }
     }
 
@@ -329,13 +329,14 @@ public class JnlpLauncher
 
         try (InputStream input = JnlpLauncher.class.getClassLoader().getResourceAsStream("app.properties")) {
             if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
+                LogManager.logDebug(logger,"Sorry, unable to find config.properties");
                 return null;
             }
             // Load the properties from the file
             properties.load(input);
         } catch (IOException ex) {
             ex.printStackTrace();
+            LogManager.logError(logger, ex.getMessage(), ex);
             return null;
         }
 
@@ -433,7 +434,7 @@ public class JnlpLauncher
         }
 
         // Print the generated command for debugging
-        System.out.println("Running command: " + String.join(" ", command));
+        LogManager.logDebug(logger,"Running command: " + String.join(" ", command));
 
         // Execute using ProcessBuilder (safer than Runtime.exec)
         ProcessBuilder processBuilder = new ProcessBuilder(command);
@@ -448,7 +449,7 @@ public class JnlpLauncher
                 String line;
                 while ((line = reader.readLine()) != null)
                 {
-                    System.out.println(line);
+                    LogManager.logDebug(logger, line);
                 }
             }
             catch (IOException e)
