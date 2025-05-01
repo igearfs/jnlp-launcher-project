@@ -2,12 +2,13 @@ Here’s a professional, cleanly formatted version of your full project descript
 
 ---
 
-## ❤️ Support This Project
+### ❤️ Support This Project
 
-If this tool helps streamline your workflow or saves you time, consider supporting continued development:
+If you find this project useful or want to support continued development!
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/igearfs)  
-Your support helps fund indie infrastructure tools, dev hours, and ongoing maintenance.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/igearfs)
+
+Your support fuels prototypes, uptime tools, and indie infrastructure builds.
 
 ---
 
