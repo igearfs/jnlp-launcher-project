@@ -1,4 +1,3 @@
-Here’s a professional, cleanly formatted version of your full project description, with your Ko-fi support section polished and integrated at the top:
 
 ---
 
