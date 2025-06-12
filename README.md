@@ -158,3 +158,6 @@ Use at your own risk.
 The developer(s) and associated organizations are **not responsible** for data loss, system failures, or any unintended behavior. Always **backup** your data before upgrading or using new versions.
 
 ---
+
+## Shout out
+Windows credential loading: https://github.com/dariusz-szczepaniak/java.jna.WindowsCredentialManager

@@ -30,6 +30,13 @@
             <artifactId>credential-secure-storage</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <!-- CREDENTIAL MANAGERS -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+        <!-- END CREDENTIAL MANAGERS -->
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
