@@ -376,7 +376,8 @@ public class JnlpLauncher
         String jrePath = javaHome + File.separator + "bin" + File.separator + "java";
 
         // Check OS and set the correct classpath separator
-        String classpathSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
+        String classpathSeparator = File.pathSeparator;  // For tonygermano
+        //System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
 
         List<String> command = new ArrayList<>();
         command.add(jrePath);
@@ -435,7 +436,7 @@ public class JnlpLauncher
 
         // Print the generated command for debugging
         LogManager.logDebug(logger,"Running command: " + String.join(" ", command));
-
+        System.out.println("Running command: " + String.join(" ", command));
         // Execute using ProcessBuilder (safer than Runtime.exec)
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.inheritIO(); // Redirects output to the console
