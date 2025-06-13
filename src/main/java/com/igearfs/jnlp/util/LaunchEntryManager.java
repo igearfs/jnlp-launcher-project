@@ -137,7 +137,7 @@ public class LaunchEntryManager
                 writer.write(entry.getName() + "|" + entry.getUrl() + "|" + entry.getNote() + "|" +
                         entry.getId() + "|" + entry.isIgnoreDomainValidation() + "|" + entry.getIconPath());
 
-                LogManager.logDebug(logger,"Saving Entry: user: " + entry.getUserName() + " pass: " + entry.getPassword());
+                //LogManager.logDebug(logger,"Saving Entry: user: " + entry.getUserName() + " pass: " + entry.getPassword());
                 if (entry.getUserName() != null && entry.getPassword() != null)
                 {
                     CredentialManager.storeCredential(entry.getId(), entry.getUserName(), entry.getPassword());
