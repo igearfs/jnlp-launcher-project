@@ -280,14 +280,11 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>bash </executable>
+                                    <executable>/bin/bash</executable>
                                     <arguments>
-                                        <argument>/c</argument>
                                         <argument>${project.basedir}/build-osx.sh</argument>
-                                        <argument>${project.basedir}/${wix.path}</argument>
                                         <argument>${project.artifactId}-${project.version}.jar</argument>
                                         <argument>${java.home}</argument>
-                                        <argument>${project.basedir}/javafx-macos-x64</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -309,7 +306,120 @@
                 <target.os>javafx-macos-arm64_17</target.os>
             </properties>
         </profile>
-
+        <profile>
+            <id>linux-arm64</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                    <arch>aarch64</arch> <!-- ARM64 architecture -->
+                </os>
+            </activation>
+            <properties>
+                <target.os>javafx-linux-aarch64</target.os>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/bin/bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/build-linux-arm64.sh</argument>
+                                        <argument>${project.artifactId}-${project.version}.jar</argument>
+                                        <argument>${java.home}</argument>
+                                        <argument>${project.basedir}/javafx-linux-aarch64</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>linux-x64</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                    <arch>x86_64</arch> <!-- x86_64 architecture -->
+                </os>
+            </activation>
+            <properties>
+                <target.os>javafx-linux-aarch64</target.os>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/bin/bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/build-linux-arm64.sh</argument>
+                                        <argument>${project.artifactId}-${project.version}.jar</argument>
+                                        <argument>${java.home}</argument>
+                                        <argument>${project.basedir}/javafx-linux-aarch64</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>linux-x86</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                    <arch>x86</arch> <!-- x86 architecture for 32-bit -->
+                </os>
+            </activation>
+            <properties>
+                <target.os>javafx-linux-aarch64</target.os>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/bin/bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/build-linux-arm64.sh</argument>
+                                        <argument>${project.artifactId}-${project.version}.jar</argument>
+                                        <argument>${java.home}</argument>
+                                        <argument>${project.basedir}/javafx-linux-aarch64</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!--        <profile>-->
 <!--            <id>osx-amd64</id>-->
 <!--            <activation>-->
@@ -333,7 +443,7 @@
 <!--                                <configuration>-->
 <!--                                    <executable>bash</executable>-->
 <!--                                    <arguments>-->
-<!--                                        <argument>${project.basedir}/build-linux.sh</argument>-->
+<!--                                        <argument>${project.basedir}/build-linux-x64.sh</argument>-->
 <!--                                        <argument>${project.artifactId}-${project.version}.jar</argument>-->
 <!--                                        <argument>${java.home}</argument>-->
 <!--                                    </arguments>-->
@@ -367,7 +477,7 @@
 <!--                                <configuration>-->
 <!--                                    <executable>bash</executable>-->
 <!--                                    <arguments>-->
-<!--                                        <argument>${project.basedir}/build-linux.sh</argument>-->
+<!--                                        <argument>${project.basedir}/build-linux-x64.sh</argument>-->
 <!--                                        <argument>${project.artifactId}-${project.version}.jar</argument>-->
 <!--                                        <argument>${java.home}</argument>-->
 <!--                                    </arguments>-->
