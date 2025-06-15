@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#
+# Copyright (c) 2025 In-Game Event, A Red Flag Syndicate LLC.
+# All rights reserved.
+#
+#
+
+# Usage: ./build-osx-intel.sh <jar-file> <java-home>
+
+JAR_FILE="$1"
+JAVA_HOME="$2"
+
+echo "Running jpackage for macOS..."
+
+# Customize these as needed
+APP_NAME="SyncSyndicate"
+MAIN_CLASS="com.igearfs.jnlp.Main"
+VERSION="1.7.1"
+DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
+VENDOR="In-Game Event, A Red Flag Syndicate LLC"
+LICENSE_FILE="LICENSE.txt"
+INSTALL_DIR="SyncSyndicate"
+APP_CONTENT="4.5.2,javafx-macos-arm64_17"
+
+# Running jpackage for macOS
+"$JAVA_HOME/bin/jpackage" \
+  --input . \
+  --name "$APP_NAME" \
+  --main-jar "$JAR_FILE" \
+  --main-class "$MAIN_CLASS" \
+  --type "pkg" \
+  --runtime-image jre \
+  --vendor "$VENDOR" \
+  --app-version "$VERSION" \
+  --description "$DESCRIPTION" \
+  --license-file "$LICENSE_FILE" \
+  --install-dir "$INSTALL_DIR" \
+  --verbose \
+  --app-content "$APP_CONTENT"
