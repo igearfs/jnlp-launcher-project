@@ -367,7 +367,8 @@ public class JnlpLauncher
         }
     }
 
-    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp, LaunchEntry entry) throws IOException
+    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp,
+                                  LaunchEntry entry) throws IOException
     {
         String javafxPath = loadTargetOS() + "/lib";  // Ensure absolute path
 
