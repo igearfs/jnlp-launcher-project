@@ -574,7 +574,7 @@
                 </os>
             </activation>
             <properties>
-                <target.os>javafx-linux-aarch64</target.os>
+                <target.os>javafx-linux-amd64</target.os>
             </properties>
             <build>
                 <plugins>
@@ -609,10 +609,6 @@
                                         <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
                                               todir="${project.basedir}/${target.os}/" />
 
-                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
-                                        <copy todir="${project.basedir}/${target.os}/lib/">
-                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
-                                        </copy>
 
                                         <!-- List the contents of the extracted folder to debug -->
                                         <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
