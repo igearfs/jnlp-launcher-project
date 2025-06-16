@@ -1,0 +1,3 @@
+*.java linguist-language=Java
+*.c linguist-vendored
+*.h linguist-vendored
