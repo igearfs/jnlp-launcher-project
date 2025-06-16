@@ -26,3 +26,4 @@ jnlp_cache/*.jar
 /javafx-win-amd64_17/
 /javafx-linux-aarch64/
 /javafx-linux-amd64/
+/javafx-linux-arm32/
