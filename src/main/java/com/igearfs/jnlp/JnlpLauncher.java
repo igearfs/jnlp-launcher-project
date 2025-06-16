@@ -6,6 +6,7 @@
 
 package com.igearfs.jnlp;
 
+import javafx.concurrent.Task;
 import com.igearfs.jnlp.model.LaunchEntry;
 import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.security.TrustStoreManager;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,7 @@ public class JnlpLauncher
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
+
             System.exit(2);
         }
     }
@@ -81,6 +84,7 @@ public class JnlpLauncher
             System.err.println("Error during JNLP launch process: " + e.getMessage());
             e.printStackTrace();
             LogManager.logError(logger, e.getMessage(), e);
+            lp.hide();
         }
         String jnlpUrl = entry.getUrl();
         Document jnlpDoc = loadJnlp(jnlpUrl);
@@ -90,6 +94,7 @@ public class JnlpLauncher
 
         if (mainClass == null || mainClass.isEmpty())
         {
+            lp.hide();
             throw new RuntimeException("Main class not found in JNLP");
         }
 
@@ -101,12 +106,35 @@ public class JnlpLauncher
         }
 
         String classpath = buildClasspath(downloadedJars);
-        launchApp(mainClass, classpath, appArgs, lp, entry);
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                launchApp(mainClass, classpath, appArgs, lp, entry);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            // UI updates after process completes, if needed
+            lp.hide();  // safer to hide here instead of inside launchApp
+        });
+
+        task.setOnFailed(e -> {
+            lp.hide();
+            task.getException().printStackTrace();
+        });
+
+        new Thread(task).start();
+
     }
 
     private static Document loadJnlp(String jnlpUrl) throws Exception
     {
-        System.out.println("Loading JNLP from: " + jnlpUrl);
+        if (!jnlpUrl.endsWith("webstart")) {
+            jnlpUrl = jnlpUrl.endsWith("/") ? jnlpUrl + "webstart" : jnlpUrl + "/webstart";
+        }
+
+        LogManager.logDebug(logger, "Loading JNLP URL: " + jnlpUrl);
         URL url = new URL(jnlpUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -150,7 +178,7 @@ public class JnlpLauncher
                     }
                 }
 
-                System.out.println("Cache for entry '" + entry.getName() + "' cleared successfully.");
+                LogManager.logDebug(logger,"Cache for entry '" + entry.getName() + "' cleared successfully.");
             }
             catch (IOException e)
             {
@@ -161,7 +189,7 @@ public class JnlpLauncher
         }
         else
         {
-            System.out.println("No cache found for entry '" + entry.getName() + "'.");
+            LogManager.logDebug(logger,"No cache found for entry '" + entry.getName() + "'.");
         }
     }
 
@@ -221,12 +249,12 @@ public class JnlpLauncher
         // If the JAR file already exists in the cache, skip the download
         if (Files.exists(jarPath))
         {
-            System.out.println("JAR already exists in cache: " + jarPath.toString());
+            LogManager.logDebug(logger,"JAR already exists in cache: " + jarPath.toString());
             return jarPath;
         }
 
         // Download the JAR file if it doesn't exist
-        System.out.println("Downloading JAR from: " + jarUrl);
+        LogManager.logDebug(logger,"Downloading JAR from: " + jarUrl);
         URL url = new URL(jarUrl);
 
         // Open a connection to the URL
@@ -246,11 +274,11 @@ public class JnlpLauncher
             }
         }
 
-        System.out.println("Downloaded JAR to: " + jarPath.toString());
+        LogManager.logDebug(logger,"Downloaded JAR to: " + jarPath.toString());
         return jarPath;
     }
 
-    private static String getDomainFromUrl(String urlString)
+    private static String getDomainFromUrl(String urlString) throws IOException
     {
         try
         {
@@ -260,7 +288,7 @@ public class JnlpLauncher
         catch (Exception e)
         {
             LogManager.logError(logger, e.getMessage(), e);
-            throw new RuntimeException("Invalid URL: " + urlString, e);
+            throw new IOException("Invalid URL: " + urlString, e);
         }
     }
 
@@ -295,6 +323,28 @@ public class JnlpLauncher
         return classpath.toString();
     }
 
+    // Static method to load system names from a file in resources
+    public static String loadTargetOS() {
+        Properties properties = new Properties();
+
+        try (InputStream input = JnlpLauncher.class.getClassLoader().getResourceAsStream("app.properties")) {
+            if (input == null) {
+                LogManager.logDebug(logger,"Sorry, unable to find config.properties");
+                return null;
+            }
+            // Load the properties from the file
+            properties.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            LogManager.logError(logger, ex.getMessage(), ex);
+            return null;
+        }
+
+        // Return the value of target.os from the properties file
+        return properties.getProperty("target.os");
+    }
+
+
     private static void addJarFilesFromFolder(File folder, StringBuilder classpath)
     {
         if (folder.exists() && folder.isDirectory())
@@ -317,16 +367,18 @@ public class JnlpLauncher
         }
     }
 
-    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp, LaunchEntry entry) throws IOException
+    private static void launchApp(String mainClass, String classpath, List<String> appArgs, LoadingPopup lp,
+                                  LaunchEntry entry) throws IOException
     {
-        String javafxPath = "javafx-sdk-17.0.2/lib";  // Ensure absolute path
+        String javafxPath = loadTargetOS() + "/lib";  // Ensure absolute path
 
         // Get the default JRE path from java.home
         String javaHome = System.getProperty("java.home");
         String jrePath = javaHome + File.separator + "bin" + File.separator + "java";
 
         // Check OS and set the correct classpath separator
-        String classpathSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
+        String classpathSeparator = File.pathSeparator;  // For tonygermano
+        //System.getProperty("os.name").toLowerCase().contains("win") ? ";" : ":";
 
         List<String> command = new ArrayList<>();
         command.add(jrePath);
@@ -384,8 +436,8 @@ public class JnlpLauncher
         }
 
         // Print the generated command for debugging
+        LogManager.logDebug(logger,"Running command: " + String.join(" ", command));
         System.out.println("Running command: " + String.join(" ", command));
-
         // Execute using ProcessBuilder (safer than Runtime.exec)
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.inheritIO(); // Redirects output to the console
@@ -399,13 +451,14 @@ public class JnlpLauncher
                 String line;
                 while ((line = reader.readLine()) != null)
                 {
-                    System.out.println(line);
+                    LogManager.logDebug(logger, line);
                 }
             }
             catch (IOException e)
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
+
             }
         }).start();
 
@@ -423,6 +476,7 @@ public class JnlpLauncher
             {
                 LogManager.logError(logger, e.getMessage(), e);
                 e.printStackTrace();
+
             }
         }).start();
 

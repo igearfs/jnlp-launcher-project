@@ -12,6 +12,7 @@ import com.igearfs.jnlp.security.CredentialManager;
 import com.igearfs.jnlp.util.ColorGridCell;
 import com.igearfs.jnlp.util.IconLoader;
 import com.igearfs.jnlp.util.LaunchEntryManager;
+import com.igearfs.jnlp.util.LogManager;
 import com.microsoft.credentialstorage.model.StoredCredential;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -280,7 +282,7 @@ public class JnlpLauncherApp extends Application
         Button selectIconButton = new Button("Select Icon");
         selectIconButton.setOnAction(e -> showIconChooserForNewEntry(iconImageView));
 
-        Button okButton = new Button("OK");
+        Button okButton = new Button("Save");
         Button cancelButton = new Button("Cancel");
 
         HBox buttonBox = new HBox(10, okButton, cancelButton);
@@ -292,10 +294,10 @@ public class JnlpLauncherApp extends Application
         popupLayout.getChildren().addAll(
                 new Label("Name:"), newNameField,
                 new Label("URL:"), newUrlField,
-                new Label("Notes:"), newNoteField,
-                new Label("Icon:"),
                 new Label("Username:"), newUserName,
                 new Label("Password:"), newPasswordField,
+                new Label("Notes:"), newNoteField,
+                new Label("Icon:"),
                 iconImageView,
                 selectIconButton,
                 newIgnoreDomainCheckBox,
@@ -307,7 +309,7 @@ public class JnlpLauncherApp extends Application
 
         okButton.setOnAction(e ->
         {
-            System.out.println("ICON SAVING FROM POPUP::" + iconImageView.getImage().getUrl());
+
             // Create a new LaunchEntry with the selected icon path
             LaunchEntry newEntry = new LaunchEntry(
                     newNameField.getText(),
@@ -411,9 +413,9 @@ public class JnlpLauncherApp extends Application
 
             if (selectedImage != null)
             {
+                LogManager.logDebug(logger,"Selected image " + selectedImage.getUrl());
                 // Update the ImageView with the selected icon in the main screen
                 iconImageView.setImage(selectedImage);
-
 
             }
 
@@ -462,8 +464,8 @@ public class JnlpLauncherApp extends Application
             String iconName = iconNames.get(i);
 
             // Load the icon image from resources
-            Image iconImage = new Image(getClass().getResourceAsStream("/icons/" + iconName));
-
+            URL url = getClass().getResource("/icons/" + iconName);
+            Image iconImage = new Image(url.toExternalForm());
             // Create a new ColorGridCell for each icon
             ColorGridCell iconCell = new ColorGridCell(iconName, iconImage);
 
@@ -512,7 +514,7 @@ public class JnlpLauncherApp extends Application
 
             // Get the icon name (as stored in the LaunchEntry object)
             String iconName = selectedEntry.getIconPath();
-            System.out.println("Loading ICON:::" + iconName);
+            LogManager.logDebug(logger, "Loading ICON:::" + iconName);
             // Get the actual image for the icon using IconLoader (or resource path)
             ImageView iconImageView = new ImageView();
             if (iconName != null && !iconName.isEmpty())
@@ -569,7 +571,6 @@ public class JnlpLauncherApp extends Application
             {
                 showIconChooserForNewEntry(iconImageView);
 
-                // After selecting an icon, compare the icon path to the original one
                 if (!iconImageView.getImage().getUrl().equals(initialIconPath))
                 {
                     isModified = true; // Mark as modified if the icon changes
@@ -590,7 +591,7 @@ public class JnlpLauncherApp extends Application
                     AlertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Error", "Failed to clear the cache. You will have to manually remove it.");
 
                 }
-                System.out.println("Cache cleared!");
+                LogManager.logDebug(logger,"Cache cleared!");
             });
 
             VBox rightPane = (VBox) ((SplitPane) primaryStage.getScene().getRoot()).getItems().get(1);
@@ -601,10 +602,10 @@ public class JnlpLauncherApp extends Application
                     new Label("ID: " + selectedEntry.getId()),
                     new Label("Name:"), nameField,
                     new Label("URL:"), urlField,
-                    new Label("Notes:"), noteField,
-                    new Label("Current Icon:"),
                     new Label("Username:"), usernameField,
                     new Label("Password:"), passwordField,
+                    new Label("Notes:"), noteField,
+                    new Label("Current Icon:"),
                     iconImageView,
                     selectIconButton,
                     ignoreDomainCheckBox,
@@ -619,7 +620,7 @@ public class JnlpLauncherApp extends Application
                 isLoading = true;
                 isModified = false;
                 controller.saveSelectedEntry(iconImageView);
-                AlertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Saved", "Entry Updated", "Save complete");
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION, "Saved", "Entry Updated", "Save complete");
                 isLoading = false;
             });
             deleteButton.setDisable(false);

@@ -1,153 +1,163 @@
---
-
-If you like using the programs feel free to support:
-
-<h1 style="font-size: 36px;">Support this development.</h1>
-
-* [Support me on Ko-fi](https://ko-fi.com/igearfs)
-
-# 🌈 **JNLP Launcher – v1.5.1** 🌈
-
-* Works with Mirth Connect 4.5.2
-* Works with Bridgelink 4.5.2 
-* Works with OIE 4.5.2
-
-⚠️ **WARNING: BACKUP YOUR `jnlp_entries.txt` FILE!** ⚠️  
-Before running this version, **make a backup** of your JNLP entries! The universe is unpredictable, and while we’ve done our best to keep things smooth, bad juju can still sneak in. Protect your data before proceeding! 😱
-
-** MOVE YOUR FILE INTO THE DATA DIRECTORY FROM THE OLD PATH ON WINDOWS to: C:\Users\<username>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt INTO THE DATA FOLDER IN THE PROJECT **
-** If you use the .exe installer let it make the directory for you after the first run and replace or drop in your jnlp_entries.txt into the correct folder. (may be different for installer just look in roaming folders for SyncSyndicate)
 
 ---
 
-📜 **GNU GENERAL PUBLIC LICENSE Version 3**  
-📌 This project is licensed under the **GNU GENERAL PUBLIC LICENSE Version 3**.
+### ❤️ Support This Project
+
+If you find this project useful or want to support continued development!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/igearfs)
+
+Your support fuels prototypes, uptime tools, and indie infrastructure builds.
 
 ---
-## 📂 **Setup & Installation**
 
-### **1️⃣ Build the Project**
-This project uses **Maven** for dependency management and packaging.  
-To build:
+# 🌈 **JNLP Launcher – v1.7.1**
+
+Compatible with:
+- ✅ Mirth Connect 4.5.2
+- ✅ Bridgelink 4.5.2
+- ✅ OIE 4.5.2
+
+> ⚠️ **Important:** Back up your `jnlp_entries.txt` file before running this version. While stable, it's always good practice to safeguard your data against potential issues.
+
+### 🔄 File Migration Notice (Windows Users)
+Move your `jnlp_entries.txt` from the previous location to:
+```
+C:\Users\<username>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt
+```
+If using the `.exe` installer, allow the app to create the directory on first run, then copy the file into the appropriate `data` folder.
+
+---
+
+## 📜 License
+
+This project is licensed under the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.html).
+
+---
+
+## 📦 Setup & Installation
+
+### 1️⃣ Build the Project
+This project uses Maven for dependency management.
+
 ```bash
 mvn clean package
-```  
-After a successful build, the runnable JAR will be located in the `target/` directory.
+```
 
-### **2️⃣ Run the Launcher**
+After building, the runnable JAR will appear in the `target/` directory.
 
-#### **Option 1: Use System Java (Requires JVM 17+)**
+---
+
+### 2️⃣ Run the Launcher
+
+#### Option 1: System Java (JVM 17+)
 ```bash
 java -jar .\target\SyncSyndicate-launcher.jar
-```  
+```
 
-#### **Option 2: Use the Bundled JRE (Windows Only)**
-1. **Extract the provided `jre.rar`**
-2. Run the launcher using the included Java runtime:
+#### Option 2: Bundled JRE (Windows Only)
+1. Extract `jre.rar`
+2. Run using the embedded Java runtime:
    ```bash
    .\jre\bin\java.exe -jar .\target\SyncSyndicate-launcher.jar
-   ```  
-#### **Option 3: use the exe generated (Windows Only 64 bit systems)*
-1. Install the generated exe file. SyncSyndicate-1.0.1.exe <-- version may be different as bugs are squashed...
+   ```
+
+#### Option 3: Windows EXE Installer
+Install `SyncSyndicate-1.0.1.exe` (version may vary as updates are released).
 
 ---
 
-### **3️⃣ Generate the Icon List**
-Before using the app, generate the icon list:
-- Run **`icon.bat`**
-- This creates `icons_list.txt`, ensuring icons load properly.
+### 3️⃣ Generate the Icon List
+
+Before first use:
+```bash
+icon.bat
+```
+This generates `icons_list.txt` to ensure all icons load properly.
 
 ---
 
-## 🌟 **Features**
+## 🌟 Features
 
-✅ **Runs on JVM 20+ for WIX Installer or Bundled JRE** (20+ is required for jpackage to package the files). **
-✅ **Add & Edit Entries** – Store JNLP launch info with name, URL, and notes. ** 
-✅ **🔎 Search Functionality** – Instantly find entries by name or URL. **
-✅ **🖼️ Grid-Based Icon Picker** – Choose from **4,000+ icons** with pagination. **  
-✅ **🎨 Icon Highlighting** – Selected icons get highlighted, making selection clear. **  
-✅ **📜 Persistent Storage** – Entries and icons persist between sessions. **
-✅ **📜 Caches jarfile buy hostname** – In cache folder you will see things like localhost. **
-✅ **📜 Works with Mirth Connect 4.5.2 **
-✅ **📜 Works with current OIE, Bridgelink and Mirth Connect fork of Mirth Connect 4.5.2 **
-✅ **📜 Auto Launch your Connects with adding username and password (Uses System password manager) **
-✅ **📜 Cache got corrupted... no worries we have a clear cache button per instance! **
-✅ **📜 Forgot to save before moving on or closing the app. We alert you for that too! **
-✅ **📜 Spinner added that it's doing something. **
-✅ **📜 Reporting a Ticket check the <USER_HOME> log folder and grab the error. **
+- ✅ JVM 20+ support (required for jpackage)
+- ✅ Add/Edit JNLP entries (name, URL, notes, credentials)
+- ✅ Grid-based icon picker (4,000+ icons with pagination)
+- ✅ Icon highlight for selection feedback
+- ✅ Persistent storage of entries and icons
+- ✅ Caching of JAR files by host (e.g. `localhost`)
+- ✅ Auto-launch with stored username/password (uses system password manager)
+- ✅ Corruption recovery with "Clear Cache" per instance
+- ✅ Unsaved changes alert
+- ✅ Visual loading spinner
+- ✅ Error logging in `<USER_HOME>/logs`
+- ✅ Verified compatibility with Mirth/Bridgelink/OIE forks
 
 ---
 
-## 🚀 **How to Use**
+## 🚀 How to Use
 
-### **📌 Adding a New Entry**
-🟢 Click `+ Add`  
-🟢 Fill in Name, URL, and Notes (Username and password optional)  
-🟢 Click `Select Icon` → Choose an icon → Click `Done`  
-🟢 Click `Save`
+### ➕ Add New Entry
+- Click `+ Add`
+- Fill out Name, URL, Notes (optional: username/password)
+- Select an icon
+- Save the entry
 
-### **🔎 Searching for an Entry**
-🔹 Use the **search bar** at the top of the list  
-🔹 Type a **name or URL** to filter results  
-🔹 Click an entry to view/edit details
+### 🔎 Search
+- Use the search bar to filter by name or URL
 
-### **🔧 Editing an Entry**
-🟡 Click an entry in the list  
-🟡 Update fields as needed  
-🟡 Click `Select Icon` to change the icon  
-🟡 Click `Save`
+### ✏️ Edit
+- Select an entry
+- Update details
+- Save changes
 
-### **❌ Deleting an Entry**
-🔴 Select an entry  
-🔴 Click `Delete`
+### ❌ Delete
+- Select an entry
+- Click `Delete`
 
 ---
 
-## ⚙ **Technical Details**
+## 🧰 Technical Details
 
-- **DOWNLOADED JAR Storage**:
-    - JARS are saved in the **user's home directory**.
-    - Example locations:
-        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\jnlp_cache`
-        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/jnlp_cache`
+### Storage Locations
 
-- **Data Storage**:
-    - Entries are saved to `jnlp_entries.txt` in the **user's home directory**.
-    - Example locations:
-        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\data\jnlp_entries.txt`
-        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/data/jnlp_entries.txt`
-      
-- **LOGS Storage**:
-    - Entries are saved to `app-<date>.txt` in the **user's home directory**.
-    - Example locations:
-        - **Windows**: `<USER_HOME>\AppData\Roaming\SyncSyndicate\logs\app-<date>.txt`
-        - **Mac/Linux**: `<USER_HOME>/.config/SyncSyndicate/logs/app-<date>.txt`
+**JNLP Cache:**
+- Windows: `%APPDATA%\SyncSyndicate\jnlp_cache`
+- Mac/Linux: `~/.config/SyncSyndicate/jnlp_cache`
 
-- **Icon Management**:
-    - Icons are loaded from `resources/icons/` based on `icons_list.txt`.
-    - The grid-based selection system efficiently paginates to prevent performance issues.
+**Data File:**
+- Windows: `%APPDATA%\SyncSyndicate\data\jnlp_entries.txt`
+- Mac/Linux: `~/.config/SyncSyndicate/data/`
+
+**Logs:**
+- Windows: `%APPDATA%\SyncSyndicate\logs\app-<date>.txt`
+- Mac/Linux: `~/.config/SyncSyndicate/logs/app-<date>.txt`
+
+**Icons:**
+- Pulled from `resources/icons/`
+- Uses `icons_list.txt` for performance-aware loading and pagination
 
 ---
 
-## ❓ **Troubleshooting**
+## ❓ Troubleshooting
 
-### 🔹 **JNLP URL Not Working?**
-- Double-check that the **URL is correct and accessible**.
-- Open the URL in a browser to see if it prompts a JNLP download.
+### JNLP Not Launching?
+- Ensure URL is reachable in a browser and links to a `.jnlp` file
 
-### 🔹 **Icons Not Showing?**
-- Ensure `icons_list.txt` is present in `resources/`.
-- Run `icon.bat` to regenerate the list.
+### Icons Missing?
+- Run `icon.bat` to regenerate `icons_list.txt`
 
-### 🔹 **App Fails to Launch?**
-- Make sure you are using **JVM 20+** or the **included JRE** (Windows only).
-- Check the console for errors and missing dependencies.
+### App Won’t Start?
+- Make sure you're using JVM 20+ or the bundled JRE
+- Check logs in the `logs/` directory for errors
 
 ---
 
-💡 **Enjoy the new features and let us know if you run into any issues!** 🚀
+## ⚠ Disclaimer
 
-⚠️ WARNING: As always, use at your own risk! ⚠️
-By downloading, installing, or running this program, you acknowledge that you are doing so at your own risk.
-The developer(S)/company is not responsible for any issues, data loss, or damage that may occur as a result of using this software.
-Please proceed with caution and make sure to back up your files!
+Use at your own risk.  
+The developer(s) and associated organizations are **not responsible** for data loss, system failures, or any unintended behavior. Always **backup** your data before upgrading or using new versions.
+
+---
+
+## Shout out
+Windows credential loading: https://github.com/dariusz-szczepaniak/java.jna.WindowsCredentialManager

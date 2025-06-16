@@ -13,8 +13,6 @@ import java.util.Arrays;
 public class CredentialManager
 {
     private static final String KEY_PREFIX = "syncsyndicate:";
-    private static final SecretStore<StoredCredential> store =
-            StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
 
     /**
      * Stores a credential securely using the platform's native credential manager.
@@ -25,22 +23,28 @@ public class CredentialManager
      */
     public static void storeCredential(String key, String username, String password)
     {
-        if (key == null || username == null || password == null)
+        SecretStore<StoredCredential> store =
+                StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
+        if(store != null)
         {
-            throw new IllegalArgumentException("Key, username, and password must not be null.");
-        }
-        key = KEY_PREFIX + key;
+            if (key == null || username == null || password == null || username.isEmpty() || password.isEmpty())
+            {
+                //throw new IllegalArgumentException("Key, username, and password must not be null.");
+                return;
+            }
+            key = KEY_PREFIX + key;
 
-        char[] passwordChars = password.toCharArray();
-        StoredCredential credential = new StoredCredential(username, passwordChars);
-        try
-        {
-            store.add(key, credential);
-        }
-        finally
-        {
-            credential.clear();
-            Arrays.fill(passwordChars, '\0');
+            char[] passwordChars = password.toCharArray();
+            StoredCredential credential = new StoredCredential(username, passwordChars);
+            try
+            {
+                store.add(key, credential);
+            }
+            finally
+            {
+                credential.clear();
+                Arrays.fill(passwordChars, '\0');
+            }
         }
     }
 
@@ -52,17 +56,22 @@ public class CredentialManager
      */
     public static String getPassword(String key)
     {
-        key = KEY_PREFIX + key;
-        StoredCredential credential = store.get(key);
-        if (credential != null)
+        SecretStore<StoredCredential> store =
+                StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
+        if(store != null)
         {
-            try
+            key = KEY_PREFIX + key;
+            StoredCredential credential = store.get(key);
+            if (credential != null)
             {
-                return new String(credential.getPassword());
-            }
-            finally
-            {
-                credential.clear();
+                try
+                {
+                    return new String(credential.getPassword());
+                }
+                finally
+                {
+                    credential.clear();
+                }
             }
         }
         return null;
@@ -76,8 +85,14 @@ public class CredentialManager
      */
     public static StoredCredential getCredential(String key)
     {
-        key = KEY_PREFIX + key;
-        return store.get(key);
+        SecretStore<StoredCredential> store =
+                StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
+        if(store != null)
+        {
+            key = KEY_PREFIX + key;
+            return store.get(key);
+        }
+        return null;
     }
 
     /**
@@ -87,8 +102,14 @@ public class CredentialManager
      */
     public static void deleteCredential(String key)
     {
-        key = KEY_PREFIX + key;
-        store.delete(key);
+        SecretStore<StoredCredential> store =
+                StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
+        if(store != null)
+        {
+            key = KEY_PREFIX + key;
+            store.delete(key);
+        }
+
     }
 
     /**
@@ -99,7 +120,13 @@ public class CredentialManager
      */
     public static boolean hasCredential(String key)
     {
-        key = KEY_PREFIX + key;
-        return store.get(key) != null;
+        SecretStore<StoredCredential> store =
+                StorageProvider.getCredentialStorage(true, SecureOption.REQUIRED);
+        if(store != null)
+        {
+            key = KEY_PREFIX + key;
+            return store.get(key) != null;
+        }
+        return false;
     }
 }

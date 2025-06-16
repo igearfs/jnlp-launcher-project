@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,9 @@ public class IconLoader
         for (String iconName : iconNames)
         {
             // Load the image from the resources/icons folder using the icon name
-            Image iconImage = new Image(IconLoader.class.getResourceAsStream("/icons/" + iconName));
+            URL iconUrl = IconLoader.class.getResource("/icons/" + iconName);
+            Image iconImage = new Image(iconUrl.toExternalForm());
+
             if (iconImage != null)
             {
                 // Create an ImageView for each icon
@@ -73,6 +76,7 @@ public class IconLoader
                 imageView.setFitWidth(20); // Set width (you can adjust this)
                 imageView.setFitHeight(20); // Set height (you can adjust this)
                 iconViews.add(imageView);
+                imageView.setId(iconName);
             }
         }
         return iconViews;
@@ -85,8 +89,9 @@ public class IconLoader
         {
             iconName = "rocket.png";
         }
-        System.out.println("Loading icon: " + iconName);
-        Image iconImage = new Image(IconLoader.class.getResourceAsStream("/icons/" + iconName));
+        LogManager.logDebug(logger,"Loading icon: " + iconName);
+        URL iconUrl = IconLoader.class.getResource("/icons/" + iconName);
+        Image iconImage = new Image(iconUrl.toExternalForm());
         if (iconImage != null)
         {
             // Create an ImageView for each icon

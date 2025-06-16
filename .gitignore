@@ -23,3 +23,7 @@ jnlp_cache/*.jar
 
 /javafx-sdk-17.0.14/src.zip
 
+/javafx-win-amd64_17/
+/javafx-linux-aarch64/
+/javafx-linux-amd64/
+/javafx-linux-arm32/
