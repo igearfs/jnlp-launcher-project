@@ -256,6 +256,10 @@
                                         <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
                                               todir="${project.basedir}/${target.os}/" />
 
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
                                         <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
                                         <copy todir="${project.basedir}/${target.os}/lib/">
                                             <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
@@ -316,6 +320,54 @@
             </properties>
             <build>
                 <plugins>
+                    <!-- Download and unzip JavaFX SDK before jpackage build -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase> <!-- Ensure it runs before the 'package' phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="download-and-unzip">
+                                        <!-- Download the JavaFX SDK -->
+                                        <get src="https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                             dest="${project.build.directory}/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                             verbose="true" />
+
+                                        <!-- Unzip the JavaFX SDK into the target directory -->
+                                        <unzip src="${project.build.directory}/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                               dest="${project.basedir}/${target.os}/"
+                                               overwrite="true" />
+
+                                        <!-- Move the 'lib' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
+                                        <copy todir="${project.basedir}/${target.os}/lib/">
+                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
+                                        </copy>
+
+                                        <!-- List the contents of the extracted folder to debug -->
+                                        <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
+                                        <fileset dir="${project.basedir}/${target.os}/" includes="**/*"/>
+
+                                        <!-- Delete the now-empty directory after moving the contents -->
+                                        <delete dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -352,7 +404,81 @@
             <properties>
                 <target.os>javafx-macos-arm64_17</target.os>
             </properties>
+            <build>
+                <plugins>
+                    <!-- Download and unzip JavaFX SDK before jpackage build -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase> <!-- Ensure it runs before the 'package' phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="download-and-unzip">
+                                        <!-- Download the JavaFX SDK -->
+                                        <get src="https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                             dest="${project.build.directory}/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                             verbose="true" />
+
+                                        <!-- Unzip the JavaFX SDK into the target directory -->
+                                        <unzip src="${project.build.directory}/openjfx-17.0.2_osx-x64_bin-sdk.zip"
+                                               dest="${project.basedir}/${target.os}/"
+                                               overwrite="true" />
+
+                                        <!-- Move the 'lib' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
+                                        <copy todir="${project.basedir}/${target.os}/lib/">
+                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
+                                        </copy>
+
+                                        <!-- List the contents of the extracted folder to debug -->
+                                        <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
+                                        <fileset dir="${project.basedir}/${target.os}/" includes="**/*"/>
+
+                                        <!-- Delete the now-empty directory after moving the contents -->
+                                        <delete dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/bin/bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/build-osx.sh</argument>
+                                        <argument>${project.artifactId}-${project.version}.jar</argument>
+                                        <argument>${java.home}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
         <profile>
             <id>linux-arm64</id>
             <activation>
@@ -366,6 +492,54 @@
             </properties>
             <build>
                 <plugins>
+                    <!-- Download and unzip JavaFX SDK before jpackage build -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase> <!-- Ensure it runs before the 'package' phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="download-and-unzip">
+                                        <!-- Download the JavaFX SDK -->
+                                        <get src="https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_linux-aarch64_bin-sdk.zip"
+                                             dest="${project.build.directory}/openjfx-17.0.2_linux-aarch64_bin-sdk.zip"
+                                             verbose="true" />
+
+                                        <!-- Unzip the JavaFX SDK into the target directory -->
+                                        <unzip src="${project.build.directory}/openjfx-17.0.2_linux-aarch64_bin-sdk.zip"
+                                               dest="${project.basedir}/${target.os}/"
+                                               overwrite="true" />
+
+                                        <!-- Move the 'lib' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
+                                        <copy todir="${project.basedir}/${target.os}/lib/">
+                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
+                                        </copy>
+
+                                        <!-- List the contents of the extracted folder to debug -->
+                                        <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
+                                        <fileset dir="${project.basedir}/${target.os}/" includes="**/*"/>
+
+                                        <!-- Delete the now-empty directory after moving the contents -->
+                                        <delete dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -404,6 +578,54 @@
             </properties>
             <build>
                 <plugins>
+                    <!-- Download and unzip JavaFX SDK before jpackage build -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase> <!-- Ensure it runs before the 'package' phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="download-and-unzip">
+                                        <!-- Download the JavaFX SDK -->
+                                        <get src="https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_linux-x64_bin-sdk.zip"
+                                             dest="${project.build.directory}/openjfx-17.0.2_linux-x64_bin-sdk.zip"
+                                             verbose="true" />
+
+                                        <!-- Unzip the JavaFX SDK into the target directory -->
+                                        <unzip src="${project.build.directory}/openjfx-17.0.2_linux-x64_bin-sdk.zip"
+                                               dest="${project.basedir}/${target.os}/"
+                                               overwrite="true" />
+
+                                        <!-- Move the 'lib' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
+                                        <copy todir="${project.basedir}/${target.os}/lib/">
+                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
+                                        </copy>
+
+                                        <!-- List the contents of the extracted folder to debug -->
+                                        <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
+                                        <fileset dir="${project.basedir}/${target.os}/" includes="**/*"/>
+
+                                        <!-- Delete the now-empty directory after moving the contents -->
+                                        <delete dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -442,6 +664,54 @@
             </properties>
             <build>
                 <plugins>
+                    <!-- Download and unzip JavaFX SDK before jpackage build -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase> <!-- Ensure it runs before the 'package' phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="download-and-unzip">
+                                        <!-- Download the JavaFX SDK -->
+                                        <get src="https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_linux-arm32_bin-sdk.zip"
+                                             dest="${project.build.directory}/openjfx-17.0.2_linux-arm32_bin-sdk.zip"
+                                             verbose="true" />
+
+                                        <!-- Unzip the JavaFX SDK into the target directory -->
+                                        <unzip src="${project.build.directory}/openjfx-17.0.2_linux-arm32_bin-sdk.zip"
+                                               dest="${project.basedir}/${target.os}/"
+                                               overwrite="true" />
+
+                                        <!-- Move the 'lib' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/lib"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Move the 'legal' folder up one level -->
+                                        <move file="${project.basedir}/${target.os}/javafx-sdk-17.0.2/legal"
+                                              todir="${project.basedir}/${target.os}/" />
+
+                                        <!-- Copy the contents of the 'bin' directory to the 'lib' directory -->
+                                        <copy todir="${project.basedir}/${target.os}/lib/">
+                                            <fileset dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2/bin" includes="**/*"/>
+                                        </copy>
+
+                                        <!-- List the contents of the extracted folder to debug -->
+                                        <echo message="Listing extracted files in ${project.basedir}/${target.os}/"/>
+                                        <fileset dir="${project.basedir}/${target.os}/" includes="**/*"/>
+
+                                        <!-- Delete the now-empty directory after moving the contents -->
+                                        <delete dir="${project.basedir}/${target.os}/javafx-sdk-17.0.2"/>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -502,38 +772,6 @@
 <!--            </build>-->
 <!--        </profile>-->
 <!--        <profile>-->
-<!--            <id>linux-amd64</id>-->
-<!--            <activation>-->
-<!--                <os>-->
-<!--                    <family>unix</family>-->
-<!--                    <arch>amd64</arch>-->
-<!--                </os>-->
-<!--            </activation>-->
-<!--            <build>-->
-<!--                <plugins>-->
-<!--                    <plugin>-->
-<!--                        <groupId>org.codehaus.mojo</groupId>-->
-<!--                        <artifactId>exec-maven-plugin</artifactId>-->
-<!--                        <version>3.5.0</version>-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--                                <phase>package</phase>-->
-<!--                                <goals>-->
-<!--                                    <goal>exec</goal>-->
-<!--                                </goals>-->
-<!--                                <configuration>-->
-<!--                                    <executable>bash</executable>-->
-<!--                                    <arguments>-->
-<!--                                        <argument>${project.basedir}/build-linux-x64.sh</argument>-->
-<!--                                        <argument>${project.artifactId}-${project.version}.jar</argument>-->
-<!--                                        <argument>${java.home}</argument>-->
-<!--                                    </arguments>-->
-<!--                                </configuration>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                    </plugin>-->
-<!--                </plugins>-->
-<!--            </build>-->
-<!--        </profile>-->
+
     </profiles>
 </project>
