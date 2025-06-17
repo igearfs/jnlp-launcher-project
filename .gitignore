@@ -27,3 +27,5 @@ jnlp_cache/*.jar
 /javafx-linux-aarch64/
 /javafx-linux-amd64/
 /javafx-linux-arm32/
+/javafx-macos-arm64_17/
+/javafx-macos-x64/
