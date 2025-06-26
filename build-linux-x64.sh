@@ -20,7 +20,7 @@ VERSION="1.7.1"
 DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
 VENDOR="In-Game Event, A Red Flag Syndicate LLC"
 LICENSE_FILE="LICENSE.txt"
-INSTALL_DIR="SyncSyndicate"
+INSTALL_DIR="/opt/SyncSyndicate"
 APP_CONTENT="4.5.2,javafx-linux-amd64"
 
 # Pick type based on OS

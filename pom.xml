@@ -620,10 +620,10 @@
                                 <configuration>
                                     <executable>/bin/bash</executable>
                                     <arguments>
-                                        <argument>${project.basedir}/build-linux-arm64.sh</argument>
+                                        <argument>${project.basedir}/build-linux-x64.sh</argument>
                                         <argument>${project.artifactId}-${project.version}.jar</argument>
                                         <argument>${java.home}</argument>
-                                        <argument>${project.basedir}/javafx-linux-aarch64</argument>
+                                        <argument>${project.basedir}/javafx-linux-amd64</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -701,10 +701,10 @@
                                 <configuration>
                                     <executable>/bin/bash</executable>
                                     <arguments>
-                                        <argument>${project.basedir}/build-linux-arm64.sh</argument>
+                                        <argument>${project.basedir}/build-linux-arm32.sh</argument>
                                         <argument>${project.artifactId}-${project.version}.jar</argument>
                                         <argument>${java.home}</argument>
-                                        <argument>${project.basedir}/javafx-linux-aarch64</argument>
+                                        <argument>${project.basedir}/javafx-linux-arm32</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
