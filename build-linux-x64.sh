@@ -39,7 +39,7 @@ echo "Creating Linux x86_64 package with jpackage..."
   --main-jar "$JAR_FILE" \
   --main-class "$MAIN_CLASS" \
   --type "$PKG_TYPE" \
-  --runtime-image jre \
+  --runtime-image linux-jre \
   --vendor "$VENDOR" \
   --app-version "$VERSION" \
   --description "$DESCRIPTION" \
