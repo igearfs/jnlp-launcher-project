@@ -1,0 +1,5 @@
+Package: syncsyndicate
+Version: 1.7.1
+Architecture: amd64
+Maintainer: In-Game Event, A Red Flag Syndicate LLC <support@syndicate.com>
+Description: SyncSyndicate: Unified JNLP Connectivity

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
@@ -83,6 +84,7 @@ public class TrustStoreManager
     // Method to save the certificate to a file
     public static void saveCertificateToFile(X509Certificate cert, String certFilePath) throws Exception
     {
+        System.out.println("Saving Certificate to " + certFilePath);
         try (FileOutputStream fos = new FileOutputStream(certFilePath))
         {
             fos.write(cert.getEncoded());
@@ -93,9 +95,12 @@ public class TrustStoreManager
     // Method to run keytool to add the certificate to the JRE truststore (cacerts)
     public static void addCertificateToTruststoreWithKeyTool(String certFilePath) throws Exception
     {
+        String javaHome = System.getProperty("java.home");
+        String keytoolPath = javaHome + File.separator + "bin" + File.separator + "keytool";
+
         // Run the keytool command to import the certificate
         ProcessBuilder processBuilder = new ProcessBuilder(
-                "keytool",
+                keytoolPath,
                 "-importcert",
                 "-file", certFilePath,
                 "-keystore", TRUSTSTORE_PATH,

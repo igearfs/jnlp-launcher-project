@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Pre-remove tasks for SyncSyndicate
+
+# Remove symlink if it exists
+if [ -L "$SYMLINK_PATH" ]; then
+    echo "Removing symlink at $SYMLINK_PATH"
+    rm "$SYMLINK_PATH"
+fi
+
+# Remove the desktop entry
+if [ -f "$LAUNCHER_PATH" ]; then
+    echo "Removing desktop entry for SyncSyndicate"
+    rm "$LAUNCHER_PATH"
+fi

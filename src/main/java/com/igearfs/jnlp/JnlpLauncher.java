@@ -303,7 +303,15 @@ public class JnlpLauncher
         StringBuilder classpath = new StringBuilder();
 
         // Include the path to the JavaFX SDK lib directory
-        String javafxLibPath = "javafx-sdk-17.0.14/lib";  // Path to your javafx-sdk lib folder
+        String javafxLibPath = loadTargetOS() + "/lib";  // Path to your javafx-sdk lib folder
+
+        if(loadTargetOS().equalsIgnoreCase("javafx-linux-amd64"))
+        {
+            javafxLibPath = System.getProperty("user.home") +
+                    File.separator + "SyncSyndicate" + File.separator + "syncsyndicate"
+                    + File.separator + "lib" + javafxLibPath + "/lib";
+        }
+
         classpath.append(javafxLibPath).append(File.pathSeparator);
 
         // Add all downloaded JARs to the classpath
@@ -315,9 +323,17 @@ public class JnlpLauncher
             }
             classpath.append(jar.toString());
         }
+        File libFolder = new File("4.5.2");
+        if(loadTargetOS().equalsIgnoreCase("javafx-linux-amd64"))
+        {
+            String targetDir = System.getProperty("user.home") +
+                    File.separator + "SyncSyndicate" + File.separator + "syncsyndicate"
+                    + File.separator + "lib" + File.separator + "4.5.2";
 
+            libFolder = new File(targetDir);
+        }
         // Add the JARs in the subfolders of the 4.5.2 directory
-        File libFolder = new File("4.5.2");  // Directory with the 4.5.2 JARs
+          // Directory with the 4.5.2 JARs
         addJarFilesFromFolder(libFolder, classpath);
 
         return classpath.toString();
@@ -385,7 +401,7 @@ public class JnlpLauncher
         command.add("--module-path");
         command.add(javafxPath);
         command.add("--add-modules");
-        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media,javafx.swing,javafx.swt");
+        command.add("javafx.controls,javafx.fxml,javafx.base,javafx.graphics,javafx.web,javafx.media,javafx.swing");
 
         // --add-opens (necessary to avoid IllegalAccessError)
         String[] opens = {

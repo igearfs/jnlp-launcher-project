@@ -20,7 +20,7 @@ VERSION="1.7.1"
 DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
 VENDOR="In-Game Event, A Red Flag Syndicate LLC"
 LICENSE_FILE="LICENSE.txt"
-INSTALL_DIR="/opt/SyncSyndicate"
+INSTALL_DIR="$HOME/SyncSyndicate"
 APP_CONTENT="4.5.2,javafx-linux-amd64"
 
 # Pick type based on OS
@@ -39,11 +39,12 @@ echo "Creating Linux x86_64 package with jpackage..."
   --main-jar "$JAR_FILE" \
   --main-class "$MAIN_CLASS" \
   --type "$PKG_TYPE" \
-  --runtime-image linux-jre \
+  --runtime-image linux_x86_64_jre \
   --vendor "$VENDOR" \
   --app-version "$VERSION" \
   --description "$DESCRIPTION" \
   --license-file "$LICENSE_FILE" \
   --install-dir "$INSTALL_DIR" \
   --verbose \
-  --app-content "$APP_CONTENT"
+  --app-content "$APP_CONTENT" \
+  --resource-dir "DEBIAN"
