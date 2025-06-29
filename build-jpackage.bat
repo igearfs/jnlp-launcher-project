@@ -12,5 +12,5 @@ rem Set the PATH variable to include Wix binaries
 set PATH=%PATH%;wix314-binaries
 
 rem Run the jpackage command with the specified arguments
-%3\bin\jpackage --input jarfile --name "SyncSyndicate" --main-jar %2 --main-class com.igearfs.jnlp.Main --type exe --runtime-image win-jre --vendor "In-Game Event, A Red Flag Syndicate LLC" --app-version "1.7.1" --description "SyncSyndicate: Unified JNLP Connectivity" --license-file LICENSE.txt --install-dir "SyncSyndicate" --verbose --win-menu --win-shortcut  --app-content "4.5.2,%4"
+%3\bin\jpackage --icon icon/RIP4.ico --input jarfile --name "SyncSyndicate" --main-jar %2 --main-class com.igearfs.jnlp.Main --type exe --runtime-image win-jre --vendor "In-Game Event, A Red Flag Syndicate LLC" --app-version "1.7.1" --description "SyncSyndicate: Unified JNLP Connectivity" --license-file LICENSE.txt --install-dir "SyncSyndicate" --verbose --win-menu --win-shortcut  --app-content "4.5.2,%4"
 endlocal
