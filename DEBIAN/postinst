@@ -10,10 +10,23 @@ MAIN_DIR="$SUDO_USER_HOME/SyncSyndicate"
 INSTALL_DIR="$MAIN_DIR/syncsyndicate"  # Update path for the new binary location
 SYMLINK_PATH="$SUDO_USER_HOME/.local/bin/SyncSyndicate"
 LAUNCHER_PATH="$SUDO_USER_HOME/.local/share/applications/SyncSyndicate.desktop"
+ICON="$INSTALL_DIR/lib/icon/RIP4.png"
 
-# Ensure the directories exist
-mkdir -p "$INSTALL_DIR/bin"
-mkdir -p "$(dirname "$SYMLINK_PATH")"
+# Check if the necessary directories exist
+if [ ! -d "$INSTALL_DIR/bin" ]; then
+    echo "Error: Directory $INSTALL_DIR/bin does not exist. Please check your build process."
+    exit 1
+fi
+
+if [ ! -d "$(dirname "$SYMLINK_PATH")" ]; then
+    echo "Error: Directory $(dirname "$SYMLINK_PATH") does not exist. Please check your build process."
+    exit 1
+fi
+
+if [ ! -d "$(dirname "$LAUNCHER_PATH")" ]; then
+    echo "Error: Directory $(dirname "$LAUNCHER_PATH") does not exist. Please check your build process."
+    exit 1
+fi
 
 # Fix ownership and permissions for all files in the installation directory
 echo "Fixing ownership and permissions for $INSTALL_DIR"
@@ -24,32 +37,35 @@ sudo chown -R $CURRENT_USER:$CURRENT_USER "$MAIN_DIR"
 # Ensure executables are marked as executable
 sudo chmod +x "$INSTALL_DIR/bin/SyncSyndicate"  # Adjust binary path here
 
-# Ensure the .desktop entry and symlink are executable
-sudo chmod +x "$LAUNCHER_PATH"
-sudo chmod +x "$SYMLINK_PATH"
-
-# Install symlink to local bin (if not already present)
+# Ensure the symlink is created and executable
 if [ ! -L "$SYMLINK_PATH" ]; then
     echo "Creating symlink at $SYMLINK_PATH"
     ln -s "$INSTALL_DIR/bin/SyncSyndicate" "$SYMLINK_PATH" || { echo "Failed to create symlink!"; exit 1; }
 fi
 
+# Ensure the .desktop entry is executable
+if [ -f "$LAUNCHER_PATH" ]; then
+    sudo chmod +x "$LAUNCHER_PATH"
+fi
+
 # Ensure the icon exists
-if [ ! -f "$INSTALL_DIR/icons/RIP4.png" ]; then
-    echo "Icon file not found! Please add a valid icon to $INSTALL_DIR/icons."
+if [ ! -f "$ICON" ]; then
+    echo "Icon file not found! Please add a valid icon to $ICON."
     exit 1
 fi
 
 # Create desktop entry for application launcher
-echo "Creating desktop entry for SyncSyndicate"
+echo "Creating desktop entry for $APP_NAME"
 cat > "$LAUNCHER_PATH" << EOL
 [Desktop Entry]
 Name=SyncSyndicate
-Exec=$INSTALL_DIR/bin/SyncSyndicate
-Icon=$INSTALL_DIR/icons/RIP4.png
+Exec=$INSTALL_DIR/bin/syncsyndicate
+Icon=$ICON
 Terminal=false
 Type=Application
 Categories=Utility;
 EOL
 
 chmod +x "$LAUNCHER_PATH"
+
+echo "Installation completed successfully!"

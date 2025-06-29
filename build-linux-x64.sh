@@ -11,7 +11,7 @@
 JAR_FILE="$1"
 JAVA_HOME="$2"
 
-echo "Running jpackage for Linux x86_64..."
+echo "Running jpackage for Linux ARM64..."
 
 # Customize these as needed
 APP_NAME="SyncSyndicate"
@@ -21,7 +21,8 @@ DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
 VENDOR="In-Game Event, A Red Flag Syndicate LLC"
 LICENSE_FILE="LICENSE.txt"
 INSTALL_DIR="$HOME/SyncSyndicate"
-APP_CONTENT="4.5.2,javafx-linux-amd64"
+APP_CONTENT="4.5.2,javafx-linux-amd64,"
+ICON="icon/RIP4.png"
 
 # Pick type based on OS
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -32,7 +33,7 @@ else
     echo "Unsupported OS: $OSTYPE"
     exit 1
 fi
-echo "Creating Linux x86_64 package with jpackage..."
+echo "Creating Linux ARM64 package with jpackage..."
 "$JAVA_HOME/bin/jpackage" \
   --input jarfile \
   --name "$APP_NAME" \
@@ -45,6 +46,6 @@ echo "Creating Linux x86_64 package with jpackage..."
   --description "$DESCRIPTION" \
   --license-file "$LICENSE_FILE" \
   --install-dir "$INSTALL_DIR" \
+  --icon "$ICON" \
   --verbose \
-  --app-content "$APP_CONTENT" \
-  --resource-dir "DEBIAN"
+  --app-content "$APP_CONTENT"

@@ -21,7 +21,8 @@ DESCRIPTION="SyncSyndicate: Unified JNLP Connectivity"
 VENDOR="In-Game Event, A Red Flag Syndicate LLC"
 LICENSE_FILE="LICENSE.txt"
 INSTALL_DIR="SyncSyndicate"
-APP_CONTENT="4.5.2,javafx-linux-amd64"
+APP_CONTENT="4.5.2,javafx-linux-amd64,icon"
+ICON="RIP4.png"
 
 # Pick type based on OS
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -45,5 +46,6 @@ echo "Creating Linux ARM64 package with jpackage..."
   --description "$DESCRIPTION" \
   --license-file "$LICENSE_FILE" \
   --install-dir "$INSTALL_DIR" \
+  --icon "$ICON" \
   --verbose \
   --app-content "$APP_CONTENT"
