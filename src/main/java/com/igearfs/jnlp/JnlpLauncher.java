@@ -309,7 +309,7 @@ public class JnlpLauncher
         {
             javafxLibPath = System.getProperty("user.home") +
                     File.separator + "SyncSyndicate" + File.separator + "syncsyndicate"
-                    + File.separator + "lib" + javafxLibPath + "/lib";
+                    + File.separator + "lib" + javafxLibPath;
         }
 
         classpath.append(javafxLibPath).append(File.pathSeparator);
